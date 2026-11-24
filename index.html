@@ -1,0 +1,3182 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MBBC — Mlaku Bareng Babadan Cangkringan</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans untuk keterbacaan optimal di desktop & mobile -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            merapi: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Lucide Icons via CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- SheetJS (xlsx) via CDN untuk membaca & membuat file Excel (.xlsx/.xls) serta CSV -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+
+  <style>
+    /* Pola latar belakang hero bertema kontur lereng Merapi */
+    .hero-pattern {
+      background-color: #064e3b;
+      background-image:
+        radial-gradient(at 85% 15%, rgba(245, 158, 11, 0.24) 0px, transparent 50%),
+        radial-gradient(at 10% 85%, rgba(16, 185, 129, 0.28) 0px, transparent 55%),
+        linear-gradient(135deg, #064e3b 0%, #047857 55%, #065f46 100%);
+    }
+
+    /* Custom scrollbar ringan */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f5f5f4;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #d6d3d1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a8a29e;
+    }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans antialiased selection:bg-emerald-200 selection:text-emerald-900">
+
+  <!-- ===================================================================== -->
+  <!-- 1. TOP NAVIGATION BAR                                                 -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/80 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 sm:h-20 gap-2">
+        <!-- Brand / Logo -->
+        <a href="#ringkasan" class="flex items-center gap-3 min-w-0 group">
+          <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-emerald-700 to-emerald-900 text-white flex items-center justify-center shadow-md shadow-emerald-900/15 shrink-0 group-hover:scale-105 transition-transform">
+            <i data-lucide="footprints" class="w-5 h-5 sm:w-6 sm:h-6 text-amber-300"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="font-extrabold text-base sm:text-lg tracking-tight text-emerald-900 truncate">MBBC</span>
+              <span id="nav-edition-pill" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                MBBC#9
+              </span>
+            </div>
+            <p class="text-xs text-stone-500 truncate hidden sm:block">Mlaku Bareng Babadan Cangkringan</p>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden lg:flex items-center gap-1 bg-stone-100 p-1 rounded-2xl border border-stone-200/70">
+          <a href="#ringkasan" class="px-3.5 py-2 rounded-xl text-sm font-semibold text-stone-700 hover:text-emerald-800 hover:bg-white transition-all">
+            Ringkasan
+          </a>
+          <a href="#pendaftaran" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold text-stone-700 hover:text-emerald-800 hover:bg-white transition-all">
+            <span>Pendaftaran</span>
+            <span id="nav-reg-dot" class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          </a>
+          <a href="#daftar-peserta" class="px-3.5 py-2 rounded-xl text-sm font-semibold text-stone-700 hover:text-emerald-800 hover:bg-white transition-all">
+            Daftar Peserta
+          </a>
+          <a href="#transportasi" class="px-3.5 py-2 rounded-xl text-sm font-semibold text-stone-700 hover:text-emerald-800 hover:bg-white transition-all">
+            Kereta Mini &amp; Bus
+          </a>
+        </nav>
+
+        <!-- Mode Admin Button -->
+        <div class="flex items-center gap-2 shrink-0">
+          <button
+            id="btn-mode-admin"
+            onclick="handleAdminButtonClick()"
+            class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-emerald-800 hover:bg-emerald-900 text-white shadow-sm hover:shadow transition-all cursor-pointer"
+          >
+            <i data-lucide="shield-check" class="w-4 h-4 text-amber-300"></i>
+            <span id="btn-mode-admin-label">Mode Admin</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile & Tablet Quick Navigation Bar -->
+      <nav class="flex lg:hidden items-center justify-around border-t border-stone-100 py-2 gap-1 overflow-x-auto">
+        <a href="#ringkasan" class="flex-1 text-center py-1.5 px-2 rounded-xl text-xs font-semibold text-stone-600 hover:bg-emerald-50 hover:text-emerald-800 whitespace-nowrap transition-colors">
+          Ringkasan
+        </a>
+        <a href="#pendaftaran" class="flex-1 inline-flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl text-xs font-semibold text-stone-600 hover:bg-emerald-50 hover:text-emerald-800 whitespace-nowrap transition-colors">
+          <span>Pendaftaran</span>
+          <span id="mobile-reg-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        </a>
+        <a href="#daftar-peserta" class="flex-1 text-center py-1.5 px-2 rounded-xl text-xs font-semibold text-stone-600 hover:bg-emerald-50 hover:text-emerald-800 whitespace-nowrap transition-colors">
+          Peserta
+        </a>
+        <a href="#transportasi" class="flex-1 text-center py-1.5 px-2 rounded-xl text-xs font-semibold text-stone-600 hover:bg-emerald-50 hover:text-emerald-800 whitespace-nowrap transition-colors">
+          Kereta &amp; Bus
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- 2. HERO BANNER INFORMASI KEGIATAN                                     -->
+  <!-- ===================================================================== -->
+  <section id="ringkasan" class="hero-pattern text-white relative overflow-hidden">
+    <!-- Dekorasi siluet gunung halus -->
+    <div class="absolute inset-0 pointer-events-none opacity-10">
+      <svg class="w-full h-full" viewBox="0 0 1440 400" preserveAspectRatio="none">
+        <path fill="currentColor" d="M0,320 L240,180 L420,270 L720,90 L1020,250 L1240,140 L1440,260 L1440,400 L0,400 Z"></path>
+      </svg>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16 relative z-10">
+      <div class="max-w-3xl">
+        <!-- Badge Edisi & Status -->
+        <div class="inline-flex flex-wrap items-center gap-2 mb-4">
+          <span id="hero-edition-badge" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-extrabold bg-amber-400 text-stone-950 shadow-md">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span>MBBC#9</span>
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/15 text-emerald-50 border border-white/20 backdrop-blur-xs">
+            <i data-lucide="mountain" class="w-3.5 h-3.5 text-amber-300"></i>
+            Lereng Merapi • Cangkringan
+          </span>
+        </div>
+
+        <!-- Judul Utama Kegiatan -->
+        <h1 id="hero-title" class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight text-white mb-4">
+          Mlaku Bareng Babadan Cangkringan #9
+        </h1>
+
+        <!-- Metadata Jadwal & Lokasi -->
+        <div class="flex flex-wrap items-center gap-3 sm:gap-4 text-sm sm:text-base text-emerald-50 mb-5">
+          <div class="inline-flex items-center gap-2 bg-emerald-950/40 px-3.5 py-2 rounded-2xl border border-white/15">
+            <i data-lucide="calendar-days" class="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 shrink-0"></i>
+            <span id="hero-date" class="font-bold text-white">Sabtu, 28 November 2026</span>
+          </div>
+          <div class="inline-flex items-center gap-2 bg-emerald-950/40 px-3.5 py-2 rounded-2xl border border-white/15">
+            <i data-lucide="clock" class="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 shrink-0"></i>
+            <span id="hero-time" class="font-medium">06.00 WIB - Selesai</span>
+          </div>
+          <div class="inline-flex items-center gap-2 bg-emerald-950/40 px-3.5 py-2 rounded-2xl border border-white/15">
+            <i data-lucide="map-pin" class="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 shrink-0"></i>
+            <span id="hero-location" class="font-medium">Halaman Kapel St. Yusup Babadan, Cangkringan, Sleman</span>
+          </div>
+        </div>
+
+        <!-- Catatan Singkat Kegiatan -->
+        <p id="hero-description" class="text-sm sm:text-base text-emerald-100/95 leading-relaxed max-w-2xl mb-6">
+          Mari sehat bersama menyusuri udara sejuk lereng Merapi! Peserta diharapkan hadir 15 menit sebelum keberangkatan. Tersedia 3 armada Kereta Mini (@50 peserta) dan 1 armada Bus MBBC (50 peserta) bagi lansia, anak-anak, dan peserta yang membutuhkan.
+        </p>
+
+        <!-- Pengumuman Status Menu Pendaftaran & Tombol Pintas -->
+        <div class="bg-emerald-950/55 border border-amber-400/40 rounded-3xl p-4 sm:p-5 mb-8 backdrop-blur-xs shadow-lg">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="space-y-1">
+              <div class="inline-flex flex-wrap items-center gap-2">
+                <span id="hero-reg-status-pill" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-400 text-stone-950">
+                  <i data-lucide="door-open" class="w-3.5 h-3.5"></i>
+                  <span>PENDAFTARAN DIBUKA</span>
+                </span>
+                <span id="hero-reg-window-text" class="text-xs font-semibold text-amber-300">
+                  24 Okt 2026, 08:00 WIB s/d 26 Nov 2026, 23:59 WIB
+                </span>
+              </div>
+              <p class="text-xs sm:text-sm text-emerald-50/95 leading-relaxed pt-1">
+                Silakan mendaftar melalui tautan <strong>Google Form resmi panitia</strong> untuk <strong>Peserta MBBC</strong>, <strong>Kereta Mini</strong>, maupun <strong>Bus MBBC</strong> selama masa pendaftaran masih dibuka.
+              </p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0">
+              <a
+                href="#pendaftaran"
+                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold bg-amber-400 hover:bg-amber-300 text-stone-950 shadow-md transition-all"
+              >
+                <i data-lucide="clipboard-edit" class="w-4 h-4"></i>
+                <span>Buka Menu Pendaftaran</span>
+              </a>
+              <a
+                href="#transportasi"
+                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-white/15 hover:bg-white/25 text-white border border-white/25 transition-all"
+              >
+                <i data-lucide="bus" class="w-4 h-4 text-amber-300"></i>
+                <span>Cek Kuota Kereta &amp; Bus</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Kartu Ringkasan Statistik di Bagian Bawah Hero -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+        <!-- Stat 1: Total Peserta MBBC -->
+        <div class="bg-white/95 text-stone-800 rounded-2xl p-4 sm:p-5 shadow-lg border border-white/40 flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+            <i data-lucide="users" class="w-5 h-5"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-stone-500">Total Peserta MBBC</p>
+            <p id="stat-total-peserta" class="text-xl sm:text-2xl font-extrabold text-emerald-900 mt-0.5">35 Peserta</p>
+            <p class="text-xs text-stone-500 mt-0.5 truncate">Terdaftar resmi</p>
+          </div>
+        </div>
+
+        <!-- Stat 2: Total Peserta Kereta Mini -->
+        <div class="bg-white/95 text-stone-800 rounded-2xl p-4 sm:p-5 shadow-lg border border-white/40 flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+            <i data-lucide="train-front" class="w-5 h-5"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-stone-500">Kereta Mini (3 Unit)</p>
+            <p id="stat-total-kereta" class="text-xl sm:text-2xl font-extrabold text-stone-900 mt-0.5">80 / 150</p>
+            <p id="stat-sisa-kereta" class="text-xs text-emerald-700 font-semibold mt-0.5 truncate">Sisa 70 kuota tersedia</p>
+          </div>
+        </div>
+
+        <!-- Stat 3: Total Peserta Bus MBBC -->
+        <div class="bg-white/95 text-stone-800 rounded-2xl p-4 sm:p-5 shadow-lg border border-white/40 flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-sky-100 text-sky-800 flex items-center justify-center shrink-0">
+            <i data-lucide="bus" class="w-5 h-5"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-stone-500">Bus MBBC (1 Unit)</p>
+            <p id="stat-total-bus" class="text-xl sm:text-2xl font-extrabold text-stone-900 mt-0.5">48 / 50</p>
+            <p id="stat-sisa-bus" class="text-xs text-sky-700 font-semibold mt-0.5 truncate">Sisa 2 kuota tersedia</p>
+          </div>
+        </div>
+
+        <!-- Stat 4: Status Keseluruhan Armada -->
+        <div class="bg-white/95 text-stone-800 rounded-2xl p-4 sm:p-5 shadow-lg border border-white/40 flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-stone-100 text-stone-800 flex items-center justify-center shrink-0">
+            <i data-lucide="gauge" class="w-5 h-5"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-stone-500">Status Armada (4 Unit)</p>
+            <p id="stat-status-armada" class="text-lg sm:text-xl font-extrabold text-stone-900 mt-0.5">1 FULL • 3 Tersedia</p>
+            <p class="text-xs text-stone-500 mt-0.5 truncate">Maks. 50 peserta/unit</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- MAIN CONTENT CONTAINER                                                -->
+  <!-- ===================================================================== -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12">
+
+    <!-- =================================================================== -->
+    <!-- 3. MENU PENDAFTARAN PESERTA, KERETA MINI & BUS                      -->
+    <!-- =================================================================== -->
+    <section id="pendaftaran" class="scroll-mt-24 bg-white rounded-3xl border border-stone-200/80 shadow-sm overflow-hidden">
+      <!-- Header Menu Pendaftaran -->
+      <div class="p-5 sm:p-7 border-b border-stone-200/80 bg-gradient-to-r from-emerald-50/80 via-white to-amber-50/50">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <div class="flex flex-wrap items-center gap-2.5 mb-1.5">
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Portal Registrasi Online</span>
+              <span id="reg-section-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                <span>PENDAFTARAN AKTIF / DIBUKA</span>
+              </span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900 tracking-tight">
+              Menu Pendaftaran Peserta, Kereta Mini &amp; Bus
+            </h2>
+          </div>
+
+          <!-- Info Masa Berlaku Akses Pendaftaran -->
+          <div class="bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-xs space-y-1 shrink-0">
+            <div class="flex items-center gap-2 text-stone-600">
+              <i data-lucide="calendar-check" class="w-4 h-4 text-emerald-700 shrink-0"></i>
+              <span>Mulai: <strong id="reg-start-display" class="text-stone-900">24 Oktober 2026, 08:00 WIB</strong></span>
+            </div>
+            <div class="flex items-center gap-2 text-stone-600">
+              <i data-lucide="calendar-x" class="w-4 h-4 text-red-600 shrink-0"></i>
+              <span>Berakhir: <strong id="reg-end-display" class="text-stone-900">26 November 2026, 23:59 WIB</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Konten Link Google Form Pendaftaran (Ditampilkan saat masa berlaku AKTIF) -->
+      <div id="reg-open-container" class="p-5 sm:p-7 space-y-5">
+        <div id="reg-google-forms-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- 3 Kartu Tautan Google Form (Peserta, Kereta Mini, Bus) dirender dinamis -->
+        </div>
+
+        <div class="pt-3 border-t border-stone-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-stone-500">
+          <p>
+            *Klik tombol di atas untuk membuka <strong>Google Form resmi dari panitia</strong> pada tab baru. Data pendaftar yang masuk akan diunggah oleh Admin ke tabel daftar peserta di bawah.
+          </p>
+          <span class="font-semibold text-emerald-800 shrink-0">Maks. 50 peserta / unit Kereta &amp; Bus</span>
+        </div>
+      </div>
+
+      <!-- Konten Terkunci (Ditampilkan saat BELUM DIBUKA atau SUDAH DITUTUP) -->
+      <div id="reg-closed-container" class="hidden p-6 sm:p-10 text-center bg-stone-50/70">
+        <div id="reg-closed-icon-wrap" class="w-14 h-14 rounded-3xl bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-3.5">
+          <i data-lucide="lock" class="w-7 h-7"></i>
+        </div>
+        <h3 id="reg-closed-title" class="text-lg sm:text-xl font-extrabold text-stone-900">
+          Akses Menu Pendaftaran Sedang Ditutup
+        </h3>
+        <p id="reg-closed-desc" class="text-xs sm:text-sm text-stone-600 max-w-xl mx-auto mt-1.5 leading-relaxed">
+          Menu pendaftaran hanya dapat diakses pada rentang tanggal dan jam yang telah ditentukan oleh Panitia MBBC.
+        </p>
+        <div class="inline-flex flex-wrap items-center justify-center gap-2 mt-4 px-4 py-2 rounded-2xl bg-white border border-stone-200 text-xs font-semibold text-stone-700 shadow-2xs">
+          <i data-lucide="clock" class="w-4 h-4 text-amber-600"></i>
+          <span id="reg-closed-schedule-note">Jadwal Akses: 24 Oktober 2026, 08:00 WIB s/d 26 November 2026, 23:59 WIB</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- 4. KARTU STATUS 4 ARMADA TRANSPORTASI (KERETA MINI 1-3 & BUS MBBC)  -->
+    <!-- =================================================================== -->
+    <section aria-labelledby="heading-armada">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-6">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Pemantauan Kapasitas Real-Time</span>
+          <h2 id="heading-armada" class="text-2xl sm:text-3xl font-extrabold text-stone-900 tracking-tight">
+            Status 3 Kereta Mini &amp; 1 Bus MBBC
+          </h2>
+        </div>
+        <p class="text-xs sm:text-sm text-stone-500">
+          Maksimal kapasitas <strong class="text-stone-700">50 peserta</strong> per kereta mini &amp; bus
+        </p>
+      </div>
+
+      <!-- Grid 4 Kartu Armada (Kereta Mini 1, 2, 3 & Bus MBBC) -->
+      <div id="armada-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- Dirender secara dinamis melalui JavaScript -->
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- 5. BAGIAN DAFTAR PESERTA MBBC                                       -->
+    <!-- =================================================================== -->
+    <section id="daftar-peserta" class="scroll-mt-24 bg-white rounded-3xl border border-stone-200/80 shadow-sm overflow-hidden">
+      <!-- Header Bagian Daftar Peserta -->
+      <div class="p-5 sm:p-7 border-b border-stone-200/80 bg-gradient-to-r from-emerald-50/70 via-white to-stone-50/50">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <div class="flex flex-wrap items-center gap-2.5 mb-1.5">
+              <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900">Daftar Peserta MBBC</h2>
+              <span id="peserta-count-badge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                35 Peserta
+              </span>
+            </div>
+            <!-- Badge Tanggal Update -->
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-50 border border-amber-200/80 text-amber-900 text-xs sm:text-sm font-semibold">
+              <i data-lucide="calendar-clock" class="w-4 h-4 text-amber-600 shrink-0"></i>
+              <span>Update terakhir: <strong id="peserta-last-update">24 November 2026, 14:30 WIB</strong></span>
+            </div>
+          </div>
+
+          <!-- Kolom Pencarian Peserta -->
+          <div class="w-full lg:w-80">
+            <label for="search-peserta" class="sr-only">Cari nama atau nomor peserta</label>
+            <div class="relative">
+              <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input
+                type="text"
+                id="search-peserta"
+                oninput="renderPesertaTable()"
+                placeholder="Cari nama atau nomor peserta..."
+                class="w-full pl-10 pr-9 py-2.5 rounded-2xl border border-stone-300 bg-white text-sm text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 transition-all"
+              />
+              <button
+                id="clear-search-peserta"
+                onclick="clearPesertaSearch()"
+                class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 cursor-pointer"
+                title="Hapus pencarian"
+              >
+                <i data-lucide="x-circle" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabel Daftar Peserta -->
+      <div class="overflow-x-auto max-h-[520px] overflow-y-auto">
+        <table class="w-full text-left border-collapse">
+          <thead class="bg-stone-100/95 sticky top-0 z-10 border-b border-stone-200 text-xs font-bold uppercase tracking-wider text-stone-600">
+            <tr>
+              <th class="py-3.5 px-4 sm:px-6 w-24 sm:w-28">No. Urut</th>
+              <th class="py-3.5 px-4 sm:px-6">Nama Peserta</th>
+              <th class="py-3.5 px-4 sm:px-6 w-36 text-right">Status</th>
+            </tr>
+          </thead>
+          <tbody id="peserta-table-body" class="divide-y divide-stone-100 text-sm">
+            <!-- Dirender secara dinamis -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer Tabel Peserta -->
+      <div class="px-5 sm:px-6 py-3.5 bg-stone-50 border-t border-stone-200/70 flex flex-wrap items-center justify-between gap-2 text-xs text-stone-500">
+        <span id="peserta-table-info">Menampilkan 35 dari 35 peserta</span>
+        <span>Gulir tabel ke bawah untuk melihat seluruh daftar peserta</span>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- 6. BAGIAN DAFTAR PESERTA KERETA MINI (1-3) & BUS MBBC               -->
+    <!-- =================================================================== -->
+    <section id="transportasi" class="scroll-mt-24 bg-white rounded-3xl border border-stone-200/80 shadow-sm overflow-hidden">
+      <!-- Header Bagian Transportasi -->
+      <div class="p-5 sm:p-7 border-b border-stone-200/80 bg-gradient-to-r from-amber-50/70 via-white to-sky-50/50">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <div class="flex flex-wrap items-center gap-2.5 mb-1.5">
+              <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900">Daftar Peserta Kereta Mini &amp; Bus</h2>
+              <span id="transport-active-pill" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800">
+                Kereta Mini 1 • SUDAH FULL (50/50)
+              </span>
+            </div>
+            <!-- Badge Tanggal Update -->
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-50 border border-amber-200/80 text-amber-900 text-xs sm:text-sm font-semibold">
+              <i data-lucide="calendar-clock" class="w-4 h-4 text-amber-600 shrink-0"></i>
+              <span>Update terakhir: <strong id="transport-last-update">24 November 2026, 14:30 WIB</strong></span>
+            </div>
+          </div>
+
+          <!-- Kolom Pencarian Peserta Transportasi -->
+          <div class="w-full lg:w-80">
+            <label for="search-transport" class="sr-only">Cari nama atau nomor urut peserta</label>
+            <div class="relative">
+              <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input
+                type="text"
+                id="search-transport"
+                oninput="renderTransportTable()"
+                placeholder="Cari nama atau nomor urut..."
+                class="w-full pl-10 pr-9 py-2.5 rounded-2xl border border-stone-300 bg-white text-sm text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 transition-all"
+              />
+              <button
+                id="clear-search-transport"
+                onclick="clearTransportSearch()"
+                class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 cursor-pointer"
+                title="Hapus pencarian"
+              >
+                <i data-lucide="x-circle" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Tab Pilihan: Kereta Mini 1, Kereta Mini 2, Kereta Mini 3, dan Bus MBBC -->
+        <div id="transport-tabs-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 mt-6">
+          <!-- Dirender secara dinamis -->
+        </div>
+      </div>
+
+      <!-- Banner Peringatan Otomatis Jika Kereta Mini atau Bus Sudah FULL (50/50 Peserta) -->
+      <div id="transport-full-banner" class="hidden mx-5 sm:mx-7 mt-5 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-900 flex items-start gap-3">
+        <div class="w-9 h-9 rounded-xl bg-red-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+          <i data-lucide="alert-octagon" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <p class="font-extrabold text-sm sm:text-base text-red-900" id="transport-full-banner-title">
+            Kereta Mini 1 — SUDAH FULL (50/50)
+          </p>
+          <p class="text-xs sm:text-sm text-red-700 mt-0.5" id="transport-full-banner-desc">
+            Kuota maksimal 50 peserta pada armada ini telah terisi penuh. Silakan cek ketersediaan kuota pada armada lainnya.
+          </p>
+        </div>
+      </div>
+
+      <!-- Tabel Daftar Peserta Transportasi (2 Kolom Bersih: No. Urut dan Nama Peserta) -->
+      <div class="overflow-x-auto max-h-[520px] overflow-y-auto mt-2">
+        <table class="w-full text-left border-collapse">
+          <thead class="bg-stone-100/95 sticky top-0 z-10 border-b border-stone-200 text-xs font-bold uppercase tracking-wider text-stone-600">
+            <tr>
+              <th class="py-3.5 px-4 sm:px-6 w-28 sm:w-32">No. Urut</th>
+              <th class="py-3.5 px-4 sm:px-6">Nama Peserta</th>
+            </tr>
+          </thead>
+          <tbody id="transport-table-body" class="divide-y divide-stone-100 text-sm">
+            <!-- Dirender secara dinamis -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer Tabel Transportasi -->
+      <div class="px-5 sm:px-6 py-3.5 bg-stone-50 border-t border-stone-200/70 flex flex-wrap items-center justify-between gap-2 text-xs text-stone-500">
+        <span id="transport-table-info">Menampilkan 50 dari 50 peserta (Kapasitas Maksimal 50 Peserta)</span>
+        <span>Kapasitas maksimal tiap Kereta Mini &amp; Bus adalah 50 peserta</span>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- FOOTER                                                                -->
+  <!-- ===================================================================== -->
+  <footer class="bg-stone-900 text-stone-300 border-t border-stone-800 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-emerald-800 text-amber-300 flex items-center justify-center">
+          <i data-lucide="footprints" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <p class="font-bold text-white text-sm">Mlaku Bareng Babadan Cangkringan (MBBC)</p>
+          <p class="text-xs text-stone-400">Portal Informasi Kegiatan, Pendaftaran, Daftar Peserta, Kereta Mini &amp; Bus</p>
+        </div>
+      </div>
+      <p class="text-xs text-stone-400">
+        Panitia MBBC • Babadan, Cangkringan, Sleman, Yogyakarta
+      </p>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 1: LOGIN PIN ADMIN                                              -->
+  <!-- ===================================================================== -->
+  <div id="modal-admin-login" class="hidden fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-stone-200">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
+            <i data-lucide="lock-keyhole" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-extrabold text-stone-900">Masuk Mode Admin</h3>
+            <p class="text-xs text-stone-500">Kelola info, masa pendaftaran &amp; daftar peserta</p>
+          </div>
+        </div>
+        <button onclick="closeLoginModal()" class="p-2 rounded-xl text-stone-400 hover:text-stone-700 hover:bg-stone-100 cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Petunjuk PIN Demo -->
+      <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm mb-4 flex items-center justify-between gap-2">
+        <div>
+          <span class="font-semibold">PIN Demo Admin:</span>
+          <code class="px-2 py-0.5 rounded-lg bg-amber-200/70 font-mono font-bold text-amber-950">mbbc2026</code>
+        </div>
+        <button
+          type="button"
+          onclick="fillDemoPin()"
+          class="px-2.5 py-1 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shrink-0 cursor-pointer transition-colors"
+        >
+          Isi Otomatis
+        </button>
+      </div>
+
+      <form onsubmit="submitAdminLogin(event)" class="space-y-4">
+        <div>
+          <label for="admin-pin-input" class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">
+            Masukkan PIN Admin
+          </label>
+          <input
+            type="password"
+            id="admin-pin-input"
+            placeholder="Ketik PIN admin..."
+            required
+            class="w-full px-4 py-3 rounded-2xl border border-stone-300 text-stone-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600"
+          />
+          <p id="admin-pin-error" class="hidden text-xs font-semibold text-red-600 mt-1.5">
+            PIN salah! Silakan gunakan PIN demo: mbbc2026
+          </p>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button
+            type="button"
+            onclick="closeLoginModal()"
+            class="px-4 py-2.5 rounded-2xl text-sm font-semibold text-stone-600 hover:bg-stone-100 cursor-pointer"
+          >
+            Batal
+          </button>
+          <button
+            type="submit"
+            class="px-5 py-2.5 rounded-2xl text-sm font-bold bg-emerald-800 hover:bg-emerald-900 text-white shadow-sm cursor-pointer"
+          >
+            Masuk Panel Admin
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 2: PANEL ADMIN LENGKAP (3 TAB PENGELOLAAN)                      -->
+  <!-- ===================================================================== -->
+  <div id="modal-admin-panel" class="hidden fixed inset-0 z-50 bg-stone-950/65 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-5xl w-full max-h-[94vh] flex flex-col shadow-2xl border border-stone-200 overflow-hidden my-auto">
+      
+      <!-- Header Panel Admin -->
+      <div class="px-5 sm:px-7 py-4 sm:py-5 bg-emerald-900 text-white flex flex-wrap items-center justify-between gap-3 shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-amber-400 text-stone-950 flex items-center justify-center font-extrabold">
+            <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-lg sm:text-xl font-extrabold leading-tight">Panel Admin MBBC</h3>
+            <p class="text-xs text-emerald-200">Kelola info kegiatan, masa pendaftaran, peserta, kereta mini &amp; bus</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onclick="confirmResetDemoData()"
+            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-amber-200 border border-white/15 cursor-pointer transition-colors"
+            title="Kembalikan ke data simulasi awal"
+          >
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+            <span>Reset Data Contoh</span>
+          </button>
+          <button
+            type="button"
+            onclick="logoutAdmin()"
+            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-red-600/90 hover:bg-red-600 text-white cursor-pointer transition-colors"
+          >
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            <span>Keluar</span>
+          </button>
+          <button
+            type="button"
+            onclick="closeAdminPanel()"
+            class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white cursor-pointer"
+            title="Tutup panel"
+          >
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigasi 3 Tab Panel Admin -->
+      <div class="px-4 sm:px-7 pt-3 bg-stone-100 border-b border-stone-200 flex overflow-x-auto gap-2 shrink-0">
+        <button
+          id="admin-tab-btn-info"
+          onclick="switchAdminTab('info')"
+          class="inline-flex items-center gap-2 px-4 py-3 rounded-t-2xl text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer bg-white text-emerald-800 border-emerald-700"
+        >
+          <i data-lucide="calendar-cog" class="w-4 h-4"></i>
+          <span>1. Info &amp; Masa Pendaftaran</span>
+        </button>
+        <button
+          id="admin-tab-btn-peserta"
+          onclick="switchAdminTab('peserta')"
+          class="inline-flex items-center gap-2 px-4 py-3 rounded-t-2xl text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer text-stone-600 border-transparent hover:text-stone-900"
+        >
+          <i data-lucide="users" class="w-4 h-4"></i>
+          <span>2. Daftar Peserta MBBC</span>
+        </button>
+        <button
+          id="admin-tab-btn-transport"
+          onclick="switchAdminTab('transport')"
+          class="inline-flex items-center gap-2 px-4 py-3 rounded-t-2xl text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer text-stone-600 border-transparent hover:text-stone-900"
+        >
+          <i data-lucide="bus" class="w-4 h-4"></i>
+          <span>3. Kereta Mini (1–3) &amp; Bus</span>
+        </button>
+      </div>
+
+      <!-- Body Konten Panel Admin (Scrollable) -->
+      <div class="p-5 sm:p-7 overflow-y-auto flex-1 space-y-6">
+
+        <!-- =============================================================== -->
+        <!-- TAB ADMIN 1: INFO KEGIATAN & MASA BERLAKU MENU PENDAFTARAN      -->
+        <!-- =============================================================== -->
+        <div id="admin-tab-content-info" class="space-y-6">
+          <form onsubmit="saveEventAndRegSettings(event)" class="space-y-6">
+            
+            <!-- Sub-Bagian A: Pengaturan Masa Berlaku Akses Menu Pendaftaran -->
+            <div class="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 sm:p-5 space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h4 class="text-sm sm:text-base font-extrabold text-amber-950 flex items-center gap-2">
+                    <i data-lucide="clock-4" class="w-4 h-4 text-amber-700"></i>
+                    <span>Masa Berlaku Akses Menu Pendaftaran</span>
+                  </h4>
+                  <p class="text-xs text-amber-800 mt-0.5">
+                    Atur kapan menu pendaftaran mulai dibuka (tanggal &amp; jam) sampai ditutup (tanggal &amp; jam).
+                  </p>
+                </div>
+                <span id="admin-reg-live-pill" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 self-start sm:self-center">
+                  Status Saat Ini: DIBUKA
+                </span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="input-reg-start" class="block text-xs font-bold uppercase tracking-wider text-amber-950 mb-1.5">
+                    Tanggal &amp; Jam Mulai Pendaftaran
+                  </label>
+                  <input
+                    type="datetime-local"
+                    id="input-reg-start"
+                    required
+                    class="w-full px-4 py-2.5 rounded-2xl border border-amber-300 bg-white text-sm font-semibold text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+
+                <div>
+                  <label for="input-reg-end" class="block text-xs font-bold uppercase tracking-wider text-amber-950 mb-1.5">
+                    Tanggal &amp; Jam Berakhir Pendaftaran
+                  </label>
+                  <input
+                    type="datetime-local"
+                    id="input-reg-end"
+                    required
+                    class="w-full px-4 py-2.5 rounded-2xl border border-amber-300 bg-white text-sm font-semibold text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+              </div>
+
+              <!-- Tombol Pintas Pengaturan Masa Berlaku -->
+              <div class="flex flex-wrap items-center gap-2 pt-1">
+                <span class="text-xs font-bold text-amber-900 mr-1">Pintasan Cepat:</span>
+                <button
+                  type="button"
+                  onclick="applyQuickRegPreset('open7days')"
+                  class="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-700 hover:bg-emerald-800 text-white cursor-pointer"
+                >
+                  Buka Mulai Sekarang (Aktif 7 Hari)
+                </button>
+                <button
+                  type="button"
+                  onclick="applyQuickRegPreset('upcoming')"
+                  class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white cursor-pointer"
+                >
+                  Jadwalkan Mulai Besok
+                </button>
+                <button
+                  type="button"
+                  onclick="applyQuickRegPreset('closeNow')"
+                  class="px-3 py-1.5 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                >
+                  Tutup Pendaftaran Sekarang
+                </button>
+              </div>
+            </div>
+
+            <!-- Sub-Bagian B: Copy-Paste Link Google Form dari Panitia -->
+            <div class="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-4 sm:p-5 space-y-4">
+              <div>
+                <h4 class="text-sm sm:text-base font-extrabold text-emerald-950 flex items-center gap-2">
+                  <i data-lucide="link" class="w-4 h-4 text-emerald-700"></i>
+                  <span>Link Google Form Pendaftaran (Copy-Paste dari Panitia)</span>
+                </h4>
+                <p class="text-xs text-emerald-800 mt-0.5">
+                  Tempel (paste) tautan Google Form resmi dari panitia. Tautan ini otomatis tampil pada Menu Pendaftaran selama masa berlaku aktif.
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label for="input-event-form-peserta" class="block text-xs font-bold uppercase tracking-wider text-emerald-950 mb-1.5">
+                    1. Link Google Form Peserta MBBC
+                  </label>
+                  <input
+                    type="url"
+                    id="input-event-form-peserta"
+                    placeholder="https://forms.gle/..."
+                    class="w-full px-3.5 py-2.5 rounded-2xl border border-emerald-300 bg-white text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                  />
+                </div>
+
+                <div>
+                  <label for="input-event-form-kereta" class="block text-xs font-bold uppercase tracking-wider text-emerald-950 mb-1.5">
+                    2. Link Google Form Kereta Mini
+                  </label>
+                  <input
+                    type="url"
+                    id="input-event-form-kereta"
+                    placeholder="https://forms.gle/..."
+                    class="w-full px-3.5 py-2.5 rounded-2xl border border-emerald-300 bg-white text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                  />
+                </div>
+
+                <div>
+                  <label for="input-event-form-bus" class="block text-xs font-bold uppercase tracking-wider text-emerald-950 mb-1.5">
+                    3. Link Google Form Bus MBBC
+                  </label>
+                  <input
+                    type="url"
+                    id="input-event-form-bus"
+                    placeholder="https://forms.gle/..."
+                    class="w-full px-3.5 py-2.5 rounded-2xl border border-emerald-300 bg-white text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Sub-Bagian C: Informasi Umum Kegiatan MBBC -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">
+                  Edisi Kegiatan (Contoh: MBBC#9)
+                </label>
+                <input
+                  type="text"
+                  id="input-event-edition"
+                  required
+                  class="w-full px-4 py-2.5 rounded-2xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">
+                  Tanggal Kegiatan
+                </label>
+                <input
+                  type="text"
+                  id="input-event-date"
+                  required
+                  placeholder="Contoh: Sabtu, 28 November 2026"
+                  class="w-full px-4 py-2.5 rounded-2xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                />
+              </div>
+
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">
+                  Judul Lengkap Kegiatan
+                </label>
+                <input
+                  type="text"
+                  id="input-event-title"
+                  required
+                  class="w-full px-4 py-2.5 rounded-2xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">
+                  Hari &amp; Jam Kumpul
+                </label>
+                <input
+                  type="text"
+                  id="input-event-time"
+                  required
+                  class="w-full px-4 py-2.5 rounded-2xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">
+                  Lokasi Titik Kumpul
+                </label>
+                <input
+                  type="text"
+                  id="input-event-location"
+                  required
+                  class="w-full px-4 py-2.5 rounded-2xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                />
+              </div>
+
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">
+                  Catatan / Deskripsi Singkat Kegiatan
+                </label>
+                <textarea
+                  id="input-event-description"
+                  rows="3"
+                  required
+                  class="w-full px-4 py-2.5 rounded-2xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="flex justify-end pt-2">
+              <button
+                type="submit"
+                class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold bg-emerald-800 hover:bg-emerald-900 text-white shadow-sm cursor-pointer"
+              >
+                <i data-lucide="save" class="w-4 h-4"></i>
+                <span>Simpan Pengaturan Kegiatan &amp; Pendaftaran</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- TAB ADMIN 2: UNGGAH & KELOLA DAFTAR PESERTA MBBC                -->
+        <!-- =============================================================== -->
+        <div id="admin-tab-content-peserta" class="hidden space-y-6">
+          
+          <!-- Pengaturan Tanggal Update Peserta -->
+          <div class="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 sm:p-5">
+            <label for="input-peserta-update" class="block text-xs font-bold uppercase tracking-wider text-amber-900 mb-1.5">
+              Tanggal &amp; Waktu Update Daftar Peserta
+            </label>
+            <div class="flex flex-col sm:flex-row gap-2.5">
+              <input
+                type="text"
+                id="input-peserta-update"
+                class="flex-1 px-4 py-2.5 rounded-2xl border border-amber-300 bg-white text-sm font-medium text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              />
+              <button
+                type="button"
+                onclick="setPesertaTimestampNow()"
+                class="px-3.5 py-2.5 rounded-2xl text-xs font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 cursor-pointer whitespace-nowrap"
+              >
+                Isi Waktu Sekarang
+              </button>
+              <button
+                type="button"
+                onclick="savePesertaManualTimestamp()"
+                class="px-4 py-2.5 rounded-2xl text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white cursor-pointer whitespace-nowrap"
+              >
+                Simpan Tanggal
+              </button>
+            </div>
+            <p class="text-xs text-amber-800 mt-1.5">
+              *Otomatis diperbarui ke waktu saat ini ketika Anda mengunggah file atau menambah data peserta, namun juga dapat diubah manual di atas.
+            </p>
+          </div>
+
+          <!-- Grid 2 Kolom: Unggah Excel/CSV & Copy-Paste Massal -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            
+            <!-- Card A: Unggah Excel / CSV -->
+            <div class="border border-stone-200 rounded-2xl p-4 sm:p-5 bg-stone-50/60 space-y-3.5">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
+                    <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                  </div>
+                  <h4 class="font-bold text-sm text-stone-900">Unggah File Excel / CSV</h4>
+                </div>
+                <button
+                  type="button"
+                  onclick="downloadSampleExcel('peserta')"
+                  class="text-xs font-bold text-emerald-700 hover:text-emerald-900 underline cursor-pointer"
+                >
+                  Unduh Contoh .xlsx
+                </button>
+              </div>
+
+              <p class="text-xs text-stone-600">
+                Mendukung format <code class="bg-white px-1.5 py-0.5 rounded border">.xlsx</code>, <code class="bg-white px-1.5 py-0.5 rounded border">.xls</code>, dan <code class="bg-white px-1.5 py-0.5 rounded border">.csv</code> dengan kolom <strong>Nomor</strong> dan <strong>Nama Peserta</strong>.
+              </p>
+
+              <!-- Mode Impor -->
+              <div class="flex items-center gap-4 text-xs font-semibold text-stone-700">
+                <label class="inline-flex items-center gap-1.5 cursor-pointer">
+                  <input type="radio" name="peserta-import-mode" value="replace" checked class="accent-emerald-700" />
+                  <span>Ganti Seluruh Daftar</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 cursor-pointer">
+                  <input type="radio" name="peserta-import-mode" value="append" class="accent-emerald-700" />
+                  <span>Tambahkan ke Daftar</span>
+                </label>
+              </div>
+
+              <label class="flex flex-col items-center justify-center border-2 border-dashed border-emerald-300 hover:border-emerald-500 bg-white rounded-2xl p-5 text-center cursor-pointer transition-colors">
+                <i data-lucide="upload-cloud" class="w-7 h-7 text-emerald-700 mb-1.5"></i>
+                <span class="text-xs sm:text-sm font-bold text-emerald-900">Pilih File Excel atau CSV</span>
+                <span class="text-[11px] text-stone-400 mt-0.5">Klik untuk memilih file dari perangkat Anda</span>
+                <input
+                  type="file"
+                  id="file-upload-peserta"
+                  accept=".xlsx,.xls,.csv"
+                  onchange="handlePesertaFileUpload(event)"
+                  class="hidden"
+                />
+              </label>
+            </div>
+
+            <!-- Card B: Copy-Paste Massal -->
+            <div class="border border-stone-200 rounded-2xl p-4 sm:p-5 bg-stone-50/60 space-y-3">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
+                  <i data-lucide="clipboard-paste" class="w-4 h-4"></i>
+                </div>
+                <h4 class="font-bold text-sm text-stone-900">Salin &amp; Tempel (Copy-Paste) Massal</h4>
+              </div>
+
+              <textarea
+                id="paste-peserta-textarea"
+                rows="4"
+                placeholder="Tempel dari Excel, Google Sheets, atau WhatsApp. Contoh:&#10;1, Ignatius Joko Susilo&#10;2, Maria Magdalena Sri Wahyuni&#10;atau cukup daftar nama per baris..."
+                class="w-full px-3.5 py-2.5 rounded-2xl border border-stone-300 bg-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600"
+              ></textarea>
+
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-3 text-xs font-semibold text-stone-700">
+                  <label class="inline-flex items-center gap-1.5 cursor-pointer">
+                    <input type="radio" name="peserta-paste-mode" value="replace" checked class="accent-emerald-700" />
+                    <span>Ganti Semua</span>
+                  </label>
+                  <label class="inline-flex items-center gap-1.5 cursor-pointer">
+                    <input type="radio" name="peserta-paste-mode" value="append" class="accent-emerald-700" />
+                    <span>Tambahkan</span>
+                  </label>
+                </div>
+
+                <button
+                  type="button"
+                  onclick="handlePesertaBulkPaste()"
+                  class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-800 hover:bg-emerald-900 text-white cursor-pointer"
+                >
+                  Proses Data Tempel
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tambah Satu Peserta Manual -->
+          <form onsubmit="handleAddSinglePeserta(event)" class="border border-stone-200 rounded-2xl p-4 bg-white flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
+            <div class="w-full sm:w-28">
+              <label class="block text-xs font-bold text-stone-600 mb-1">Nomor (Opsional)</label>
+              <input
+                type="number"
+                id="single-peserta-no"
+                min="1"
+                placeholder="Auto"
+                class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600"
+              />
+            </div>
+            <div class="flex-1">
+              <label class="block text-xs font-bold text-stone-600 mb-1">Tambah Nama Peserta Baru</label>
+              <input
+                type="text"
+                id="single-peserta-name"
+                required
+                placeholder="Masukkan nama lengkap peserta..."
+                class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600"
+              />
+            </div>
+            <button
+              type="submit"
+              class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-700 hover:bg-emerald-800 text-white cursor-pointer shrink-0"
+            >
+              <i data-lucide="user-plus" class="w-4 h-4"></i>
+              <span>Tambah Peserta</span>
+            </button>
+          </form>
+
+          <!-- Daftar Kelola Peserta Saat Ini -->
+          <div class="border border-stone-200 rounded-2xl overflow-hidden">
+            <div class="px-4 py-3 bg-stone-100 border-b border-stone-200 flex flex-wrap items-center justify-between gap-2">
+              <span id="admin-peserta-list-title" class="text-xs sm:text-sm font-extrabold text-stone-800">
+                Daftar Peserta Terdaftar (35 Peserta)
+              </span>
+              <button
+                type="button"
+                onclick="confirmClearAllPeserta()"
+                class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-red-100 hover:bg-red-200 text-red-700 cursor-pointer"
+              >
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                <span>Hapus Semua Peserta</span>
+              </button>
+            </div>
+            <div class="max-h-64 overflow-y-auto divide-y divide-stone-100" id="admin-peserta-list-body">
+              <!-- Dirender dinamis -->
+            </div>
+          </div>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- TAB ADMIN 3: UNGGAH & KELOLA KERETA MINI (1-3) & BUS MBBC       -->
+        <!-- =============================================================== -->
+        <div id="admin-tab-content-transport" class="hidden space-y-6">
+
+          <!-- Pilih Target Armada: Kereta Mini 1, 2, 3 atau Bus MBBC -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-2">
+              Pilih Armada yang Dikelola (Maks. 50 Peserta / Unit)
+            </label>
+            <div id="admin-transport-selector" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <!-- Dirender dinamis -->
+            </div>
+          </div>
+
+          <!-- Peringatan Jika Armada Target Sudah 50/50 FULL -->
+          <div id="admin-transport-full-alert" class="hidden p-4 rounded-2xl bg-red-50 border border-red-200 text-red-900 flex items-center gap-3">
+            <i data-lucide="alert-circle" class="w-5 h-5 text-red-600 shrink-0"></i>
+            <p class="text-xs sm:text-sm font-bold" id="admin-transport-full-alert-text">
+              Kereta Mini 1 sudah mencapai kapasitas maksimal 50 peserta (SUDAH FULL).
+            </p>
+          </div>
+
+          <!-- Pengaturan Tanggal Update Armada Terpilih -->
+          <div class="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 sm:p-5">
+            <label for="input-transport-update" class="block text-xs font-bold uppercase tracking-wider text-amber-900 mb-1.5" id="label-transport-update">
+              Tanggal &amp; Waktu Update Daftar Kereta Mini
+            </label>
+            <div class="flex flex-col sm:flex-row gap-2.5">
+              <input
+                type="text"
+                id="input-transport-update"
+                class="flex-1 px-4 py-2.5 rounded-2xl border border-amber-300 bg-white text-sm font-medium text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              />
+              <button
+                type="button"
+                onclick="setTransportTimestampNow()"
+                class="px-3.5 py-2.5 rounded-2xl text-xs font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 cursor-pointer whitespace-nowrap"
+              >
+                Isi Waktu Sekarang
+              </button>
+              <button
+                type="button"
+                onclick="saveTransportManualTimestamp()"
+                class="px-4 py-2.5 rounded-2xl text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white cursor-pointer whitespace-nowrap"
+              >
+                Simpan Tanggal
+              </button>
+            </div>
+          </div>
+
+          <!-- Grid 2 Kolom: Unggah Excel/CSV & Copy-Paste Massal -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            
+            <!-- Card A: Unggah Excel / CSV Armada -->
+            <div class="border border-stone-200 rounded-2xl p-4 sm:p-5 bg-stone-50/60 space-y-3.5">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
+                    <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                  </div>
+                  <h4 class="font-bold text-sm text-stone-900" id="admin-transport-upload-title">Unggah Excel / CSV Kereta Mini 1</h4>
+                </div>
+                <button
+                  type="button"
+                  onclick="downloadSampleExcel(activeAdminTransportUnit === 'bus' ? 'bus' : 'kereta')"
+                  class="text-xs font-bold text-emerald-700 hover:text-emerald-900 underline cursor-pointer"
+                >
+                  Unduh Contoh .xlsx
+                </button>
+              </div>
+
+              <p class="text-xs text-stone-600" id="admin-transport-upload-desc">
+                Maksimal <strong>50 peserta</strong> per unit. Jika file berisi lebih dari 50 nama, sistem otomatis memuat 50 peserta pertama dan menandai armada <strong>SUDAH FULL (50/50)</strong>.
+              </p>
+
+              <div class="flex items-center gap-4 text-xs font-semibold text-stone-700">
+                <label class="inline-flex items-center gap-1.5 cursor-pointer">
+                  <input type="radio" name="transport-import-mode" value="replace" checked class="accent-emerald-700" />
+                  <span>Ganti Seluruh Daftar</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 cursor-pointer">
+                  <input type="radio" name="transport-import-mode" value="append" class="accent-emerald-700" />
+                  <span>Tambahkan ke Daftar</span>
+                </label>
+              </div>
+
+              <label class="flex flex-col items-center justify-center border-2 border-dashed border-emerald-300 hover:border-emerald-500 bg-white rounded-2xl p-5 text-center cursor-pointer transition-colors">
+                <i data-lucide="upload-cloud" class="w-7 h-7 text-emerald-700 mb-1.5"></i>
+                <span class="text-xs sm:text-sm font-bold text-emerald-900">Pilih File Excel atau CSV</span>
+                <span class="text-[11px] text-stone-400 mt-0.5">Format: Nomor Urut &amp; Nama Peserta</span>
+                <input
+                  type="file"
+                  id="file-upload-transport"
+                  accept=".xlsx,.xls,.csv"
+                  onchange="handleTransportFileUpload(event)"
+                  class="hidden"
+                />
+              </label>
+            </div>
+
+            <!-- Card B: Copy-Paste Massal Armada -->
+            <div class="border border-stone-200 rounded-2xl p-4 sm:p-5 bg-stone-50/60 space-y-3">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
+                  <i data-lucide="clipboard-paste" class="w-4 h-4"></i>
+                </div>
+                <h4 class="font-bold text-sm text-stone-900" id="admin-transport-paste-title">Tempel Massal ke Kereta Mini 1</h4>
+              </div>
+
+              <textarea
+                id="paste-transport-textarea"
+                rows="4"
+                placeholder="Tempel daftar peserta di sini (maks. 50 peserta). Contoh:&#10;1, Eyang Kakung Hardjo&#10;2, Eyang Putri Hardjo"
+                class="w-full px-3.5 py-2.5 rounded-2xl border border-stone-300 bg-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600"
+              ></textarea>
+
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-3 text-xs font-semibold text-stone-700">
+                  <label class="inline-flex items-center gap-1.5 cursor-pointer">
+                    <input type="radio" name="transport-paste-mode" value="replace" checked class="accent-emerald-700" />
+                    <span>Ganti Semua</span>
+                  </label>
+                  <label class="inline-flex items-center gap-1.5 cursor-pointer">
+                    <input type="radio" name="transport-paste-mode" value="append" class="accent-emerald-700" />
+                    <span>Tambahkan</span>
+                  </label>
+                </div>
+
+                <button
+                  type="button"
+                  onclick="handleTransportBulkPaste()"
+                  class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-800 hover:bg-emerald-900 text-white cursor-pointer"
+                >
+                  Proses Data Tempel
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tambah Satu Peserta ke Armada Terpilih -->
+          <form onsubmit="handleAddSingleTransport(event)" class="border border-stone-200 rounded-2xl p-4 bg-white flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
+            <div class="flex-1">
+              <label class="block text-xs font-bold text-stone-600 mb-1" id="admin-transport-single-label">
+                Tambah Peserta ke Kereta Mini 1 (Nomor Urut Otomatis 1–50)
+              </label>
+              <input
+                type="text"
+                id="single-transport-name"
+                required
+                placeholder="Masukkan nama peserta..."
+                class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600"
+              />
+            </div>
+            <button
+              type="submit"
+              id="btn-add-single-transport"
+              class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-700 hover:bg-emerald-800 text-white cursor-pointer shrink-0"
+            >
+              <i data-lucide="user-plus" class="w-4 h-4"></i>
+              <span>Tambah Peserta</span>
+            </button>
+          </form>
+
+          <!-- Daftar Kelola Peserta Armada Terpilih -->
+          <div class="border border-stone-200 rounded-2xl overflow-hidden">
+            <div class="px-4 py-3 bg-stone-100 border-b border-stone-200 flex flex-wrap items-center justify-between gap-2">
+              <span id="admin-transport-list-title" class="text-xs sm:text-sm font-extrabold text-stone-800">
+                Peserta Kereta Mini 1 (50 / 50 Peserta)
+              </span>
+              <button
+                type="button"
+                onclick="confirmClearActiveTransport()"
+                class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-red-100 hover:bg-red-200 text-red-700 cursor-pointer"
+              >
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                <span id="btn-clear-transport-label">Kosongkan Kereta Mini 1</span>
+              </button>
+            </div>
+            <div class="max-h-64 overflow-y-auto divide-y divide-stone-100" id="admin-transport-list-body">
+              <!-- Dirender dinamis -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 3: KONFIRMASI KUSTOM (PENGGANTI window.confirm)                 -->
+  <!-- ===================================================================== -->
+  <div id="modal-confirm" class="hidden fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-stone-200">
+      <div class="flex items-start gap-3.5 mb-4">
+        <div class="w-10 h-10 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+          <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h4 id="confirm-modal-title" class="text-base font-extrabold text-stone-900">Konfirmasi Tindakan</h4>
+          <p id="confirm-modal-message" class="text-xs sm:text-sm text-stone-600 mt-1">Apakah Anda yakin?</p>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button
+          type="button"
+          onclick="closeConfirmModal()"
+          class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-stone-600 hover:bg-stone-100 cursor-pointer"
+        >
+          Batal
+        </button>
+        <button
+          type="button"
+          id="confirm-modal-yes-btn"
+          class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+        >
+          Ya, Lanjutkan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- TOAST NOTIFICATION CONTAINER (PENGGANTI window.alert)                 -->
+  <!-- ===================================================================== -->
+  <div id="toast-container" class="fixed bottom-4 right-4 z-[60] flex flex-col gap-2.5 max-w-sm w-[calc(100%-2rem)] pointer-events-none"></div>
+
+  <!-- ===================================================================== -->
+  <!-- JAVASCRIPT APPLICATION LOGIC                                          -->
+  <!-- ===================================================================== -->
+  <script>
+    /**
+     * KONSTANTA GLOBAL APLIKASI
+     */
+    const ADMIN_PIN = 'mbbc2026';
+    const MAX_UNIT_CAPACITY = 50; // Kapasitas maksimal 50 peserta per Kereta Mini maupun Bus
+
+    /**
+     * STATE IN-MEMORY APLIKASI
+     */
+    let appState = null;
+    let isAdminLoggedIn = false;
+    let activePublicTransportUnit = '1'; // '1', '2', '3', atau 'bus'
+    let activeAdminTransportUnit = '1';  // '1', '2', '3', atau 'bus'
+    let pendingConfirmCallback = null;
+
+    /**
+     * HELPER FORMAT DATETIME-LOCAL KE TEKS INDONESIA (WIB)
+     */
+    function formatDateTimeIndo(isoLocalStr) {
+      if (!isoLocalStr) return '-';
+      const parts = isoLocalStr.split('T');
+      if (parts.length !== 2) return isoLocalStr;
+      const [y, m, d] = parts[0].split('-').map(Number);
+      const [hh, mm] = parts[1].split(':');
+      const bulanIndo = [
+        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+      ];
+      const bulanNama = bulanIndo[(m || 1) - 1] || '';
+      return `${d} ${bulanNama} ${y}, ${hh}:${mm} WIB`;
+    }
+
+    function toDateTimeLocalString(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      const hh = String(dateObj.getHours()).padStart(2, '0');
+      const mm = String(dateObj.getMinutes()).padStart(2, '0');
+      return `${y}-${m}-${d}T${hh}:${mm}`;
+    }
+
+    function getCurrentIndonesianTimestamp() {
+      const bulanIndo = [
+        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+      ];
+      const now = new Date();
+      const tanggal = now.getDate();
+      const bulan = bulanIndo[now.getMonth()];
+      const tahun = now.getFullYear();
+      const jam = String(now.getHours()).padStart(2, '0');
+      const menit = String(now.getMinutes()).padStart(2, '0');
+      return `${tanggal} ${bulan} ${tahun}, ${jam}:${menit} WIB`;
+    }
+
+    /**
+     * CEK STATUS MASA BERLAKU AKSES MENU PENDAFTARAN
+     * Mengembalikan status: 'OPEN', 'UPCOMING', atau 'CLOSED'
+     */
+    function getRegistrationWindowStatus() {
+      const startStr = appState.regWindow?.start || '';
+      const endStr = appState.regWindow?.end || '';
+      const startMs = startStr ? new Date(startStr).getTime() : 0;
+      const endMs = endStr ? new Date(endStr).getTime() : Infinity;
+      const nowMs = Date.now();
+
+      if (startMs && nowMs < startMs) {
+        return {
+          status: 'UPCOMING',
+          startLabel: formatDateTimeIndo(startStr),
+          endLabel: formatDateTimeIndo(endStr)
+        };
+      }
+      if (endMs && nowMs > endMs) {
+        return {
+          status: 'CLOSED',
+          startLabel: formatDateTimeIndo(startStr),
+          endLabel: formatDateTimeIndo(endStr)
+        };
+      }
+      return {
+        status: 'OPEN',
+        startLabel: formatDateTimeIndo(startStr),
+        endLabel: formatDateTimeIndo(endStr)
+      };
+    }
+
+    /**
+     * DATA SIMULASI AWAL
+     * - 35 Peserta MBBC#9
+     * - Kereta Mini 1: 50 Peserta (SUDAH FULL)
+     * - Kereta Mini 2: 24 Peserta (Tersedia 26 kuota)
+     * - Kereta Mini 3: 6 Peserta (Tersedia 44 kuota)
+     * - Bus MBBC: 48 Peserta (Tersedia 2 kuota; jika mencapai 50 otomatis BUS SUDAH FULL)
+     */
+    function getDefaultDemoData() {
+      const now = new Date();
+      const defaultStart = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000); // 2 hari lalu
+      const defaultEnd = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);   // 5 hari ke depan
+
+      const pesertaNames = [
+        'Ignatius Joko Susilo', 'Maria Magdalena Sri Wahyuni', 'Antonius Bambang Wijanarko',
+        'Theresia Endang Sulastri', 'Yohanes Baptista Sudarman', 'Elisabeth Siti Aminah',
+        'Fransiskus Xaverius Hartono', 'Agnes Tri Rahayu', 'Petrus Kanisius Slamet Riyadi',
+        'Bernadette Rini Astuti', 'Paulus Agung Nugroho', 'Christina Widiastuti',
+        'Stephanus Eko Prasetyo', 'Veronica Dewi Sartika', 'Lukas Hermawan',
+        'Margaretha Sumiyati', 'Andreas Kurniawan', 'Cecilia Dwi Handayani',
+        'Thomas Aquinas Suryanto', 'Ursula Ratna Kumalasari', 'Albertus Magnus Setiawan',
+        'Clara Indah Permatasari', 'Dominikus Wahyu Hidayat', 'Lucia Nurul Fatimah',
+        'Vincentius Bayu Saputra', 'Katarina Retno Wulandari', 'Benediktus Dimas Prakoso',
+        'Monica Ayu Lestari', 'Gregorius Hendra Kusuma', 'Helena Kartika Sari',
+        'Matheus Arif Budiman', 'Sisilia Oktaviani', 'Markus Dani Santoso',
+        'Anastasia Putri Maharani', 'Filipus Rudi Hartanto'
+      ];
+
+      const kereta1Names = [
+        'Eyang Kakung Hardjo Suwito', 'Eyang Putri Hardjo Suwito', 'Ibu Theresia Sukiyem',
+        'Bapak Antonius Paijo', 'Ibu Emilia Tukinem', 'Bapak Vinsensius Ponijan',
+        'Ibu Skolastika Ngatinah', 'Bapak Kornelius Paryono', 'Ibu Agatha Tumiyem',
+        'Bapak Yosef Dalijo', 'Ibu Bernadette Sarinem', 'Bapak Petrus Wardoyo',
+        'Ibu Christina Kasinem', 'Bapak Paulus Jono', 'Ibu Felisitas Wagiyem',
+        'Bapak Damianus Suyatno', 'Adik Gabriel Nathan Wijanarko', 'Adik Rafael Kenzie Prasetyo',
+        'Ibu Maria Magdalena Sri Wahyuni', 'Adik Clara Mikayla Putri', 'Ibu Martha Supriyati',
+        'Bapak Nikolaus Fajar Siddiq', 'Ibu Dionysia Ningsih', 'Adik Lucas Alvero',
+        'Ibu Margaretha Sumiyati', 'Bapak Thomas Aquinas Suryanto', 'Ibu Elisabeth Siti Aminah',
+        'Bapak Yohanes Baptista Sudarman', 'Ibu Theresia Endang Sulastri', 'Bapak Petrus Kanisius Slamet Riyadi',
+        'Adik Kezia Nathania', 'Ibu Cecilia Dwi Handayani', 'Adik Matthew Giovani',
+        'Ibu Lucia Nurul Fatimah', 'Bapak Fransiskus Giyanto', 'Ibu Agnes Semi',
+        'Bapak Stephanus Marjuki', 'Ibu Rosalia Fitriani', 'Adik Evelyn Aurelia',
+        'Ibu Yuliana Novita Sari', 'Bapak Yohanes Kliwon', 'Ibu Elisabeth Poniyem',
+        'Adik Samuel Arkananta', 'Ibu Maria Goretti Wahyuningsih', 'Ibu Brigita Kusumawardani',
+        'Adik Felicia Jocelyn', 'Ibu Anastasia Putri Maharani', 'Bapak Albertus Magnus Setiawan',
+        'Ibu Katarina Retno Wulandari', 'Adik Benedictus Darren'
+      ];
+
+      const kereta2Names = [
+        'Ibu Agnes Tri Rahayu', 'Adik Nadine Abigail', 'Ibu Bernadette Rini Astuti',
+        'Ibu Christina Widiastuti', 'Adik Christian Gavriel', 'Ibu Veronica Dewi Sartika',
+        'Ibu Ursula Ratna Kumalasari', 'Ibu Clara Indah Permatasari', 'Adik Sophia Clarissa',
+        'Ibu Monica Ayu Lestari', 'Ibu Helena Kartika Sari', 'Ibu Sisilia Oktaviani',
+        'Adik Joshua Emmanuel', 'Bapak Ignatius Joko Susilo', 'Bapak Antonius Bambang Wijanarko',
+        'Ibu Sri Lestari Handoko', 'Bapak FX. Budi Santoso', 'Ibu Anastasia Wulan',
+        'Adik Timothy Marvel', 'Ibu Maria Fransiska Yanti', 'Bapak Yoseph Murdiono',
+        'Ibu Theresia Sumarsih', 'Adik Valerie Gracia', 'Bapak Ignatius Suwarno'
+      ];
+
+      const kereta3Names = [
+        'Bapak Andreas Kurniawan', 'Ibu Angelina Permata', 'Adik Sebastian Lionel',
+        'Ibu Yustina Rahmawati', 'Bapak Mikael Setyawan', 'Ibu Regina Puspitasari'
+      ];
+
+      const busNames = [
+        'Bapak Antonius Sutrisno', 'Ibu Maria Goretti Partini', 'Bapak Yohanes Bosco Suparman',
+        'Ibu Theresia Wagirah', 'Bapak Fransiskus Asisi Suyadi', 'Ibu Elisabeth Tumirah',
+        'Bapak Petrus Claver Tukijo', 'Ibu Agnes Ngadinem', 'Bapak Paulus Miki Sutarman',
+        'Ibu Christina Paimin', 'Bapak Lukas Sugiyanto', 'Ibu Margaretha Lasinem',
+        'Bapak Stephanus Mujiono', 'Ibu Veronica Katinem', 'Bapak Dominikus Legiman',
+        'Ibu Cecilia Painem', 'Bapak Thomas More Sarjono', 'Ibu Ursula Ponirah',
+        'Bapak Albertus Sukiman', 'Ibu Clara Saminem', 'Bapak Vincentius Ngatijo',
+        'Ibu Katarina Waginah', 'Bapak Benediktus Tukiman', 'Ibu Monica Sukirah',
+        'Bapak Gregorius Supriyadi', 'Ibu Helena Sariyem', 'Bapak Matheus Jumadi',
+        'Ibu Sisilia Tugiyem', 'Bapak Markus Suyono', 'Ibu Anastasia Partiyem',
+        'Bapak Filipus Sugeng', 'Ibu Rosalia Sumarni', 'Bapak Yoseph Sunarto',
+        'Ibu Brigita Wahyuni', 'Bapak Nikolaus Purwanto', 'Ibu Yuliana Hartati',
+        'Bapak Damianus Subagyo', 'Ibu Martha Sulastri', 'Bapak Kornelius Widodo',
+        'Ibu Agatha Mulyani', 'Bapak Ignatius Santoso', 'Ibu Lucia Kusmiyati',
+        'Bapak Sebastianus Pramono', 'Ibu Bernadette Tri Astuti', 'Bapak Laurentius Gunawan',
+        'Ibu Felisitas Handayani', 'Bapak Rafael Nugroho', 'Ibu Emilia Rahayu'
+      ];
+
+      return {
+        eventInfo: {
+          edition: 'MBBC#9',
+          title: 'Mlaku Bareng Babadan Cangkringan (MBBC)',
+          date: 'Sabtu, 28 November 2026',
+          time: '06.00 WIB - Selesai',
+          location: 'Halaman Kapel St. Yusup Babadan, Cangkringan, Sleman',
+          description: 'Mari sehat bersama menyusuri udara sejuk lereng Merapi! Peserta diharapkan hadir 15 menit sebelum keberangkatan. Tersedia 3 armada Kereta Mini (@50 peserta) dan 1 armada Bus MBBC (50 peserta) bagi lansia, anak-anak, dan peserta yang membutuhkan.',
+          formPesertaUrl: 'https://forms.gle/TJgh8Te91idYpS9c9',
+          formKeretaUrl: 'https://forms.gle/3eqB3k2XnoCndveu9',
+          formBusUrl: ''
+        },
+        regWindow: {
+          start: toDateTimeLocalString(defaultStart),
+          end: toDateTimeLocalString(defaultEnd)
+        },
+        pesertaLastUpdate: '24 November 2026, 14:30 WIB',
+        pesertaList: pesertaNames.map((nama, idx) => ({
+          nomor: idx + 1,
+          nama
+        })),
+        keretaLastUpdate: '24 November 2026, 14:30 WIB',
+        keretaMini: {
+          1: kereta1Names.map((nama, idx) => ({ nomor: idx + 1, nama })),
+          2: kereta2Names.map((nama, idx) => ({ nomor: idx + 1, nama })),
+          3: kereta3Names.map((nama, idx) => ({ nomor: idx + 1, nama }))
+        },
+        busLastUpdate: '24 November 2026, 14:30 WIB',
+        busList: busNames.map((nama, idx) => ({
+          nomor: idx + 1,
+          nama
+        }))
+      };
+    }
+
+    /**
+     * HELPER MENDAPATKAN INFO UNIT TRANSPORTASI ('1', '2', '3', atau 'bus')
+     */
+    function getTransportUnitMeta(unitKey) {
+      if (unitKey === 'bus') {
+        const list = appState.busList || [];
+        return {
+          key: 'bus',
+          label: 'Bus MBBC',
+          shortLabel: 'Bus MBBC',
+          icon: 'bus',
+          accent: 'sky',
+          list,
+          count: list.length,
+          isFull: list.length >= MAX_UNIT_CAPACITY,
+          remaining: Math.max(0, MAX_UNIT_CAPACITY - list.length),
+          lastUpdate: appState.busLastUpdate || '-',
+          fullTitle: 'Bus MBBC — BUS SUDAH FULL (50/50)',
+          fullShortBadge: 'BUS FULL'
+        };
+      }
+      const num = Number(unitKey);
+      const list = appState.keretaMini[num] || [];
+      return {
+        key: String(num),
+        label: `Kereta Mini ${num}`,
+        shortLabel: `Kereta Mini ${num}`,
+        icon: 'train-front',
+        accent: 'emerald',
+        list,
+        count: list.length,
+        isFull: list.length >= MAX_UNIT_CAPACITY,
+        remaining: Math.max(0, MAX_UNIT_CAPACITY - list.length),
+        lastUpdate: appState.keretaLastUpdate || '-',
+        fullTitle: `Kereta Mini ${num} — SUDAH FULL (50/50)`,
+        fullShortBadge: 'SUDAH FULL'
+      };
+    }
+
+    /**
+     * SANITASI TEKS HTML UNTUK KEAMANAN XSS
+     */
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    /**
+     * TOAST NOTIFICATION SYSTEM (PENGGANTI alert)
+     */
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+
+      const styles = {
+        success: 'bg-emerald-900 text-white border-emerald-700',
+        warning: 'bg-amber-600 text-white border-amber-500',
+        error: 'bg-red-700 text-white border-red-600'
+      };
+      const icons = {
+        success: 'check-circle-2',
+        warning: 'alert-triangle',
+        error: 'x-circle'
+      };
+
+      toast.className = `pointer-events-auto flex items-start gap-3 p-4 rounded-2xl border shadow-xl text-xs sm:text-sm font-semibold transition-all duration-300 ${styles[type] || styles.success}`;
+      toast.innerHTML = `
+        <i data-lucide="${icons[type] || 'info'}" class="w-5 h-5 shrink-0 mt-0.5"></i>
+        <span class="flex-1 leading-snug">${escapeHtml(message)}</span>
+      `;
+
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(8px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 4500);
+    }
+
+    /**
+     * MODAL KONFIRMASI KUSTOM (PENGGANTI confirm)
+     */
+    function openConfirmModal(title, message, onConfirm) {
+      document.getElementById('confirm-modal-title').textContent = title;
+      document.getElementById('confirm-modal-message').textContent = message;
+      pendingConfirmCallback = onConfirm;
+      document.getElementById('modal-confirm').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('modal-confirm').classList.add('hidden');
+      pendingConfirmCallback = null;
+    }
+
+    document.getElementById('confirm-modal-yes-btn').addEventListener('click', () => {
+      if (typeof pendingConfirmCallback === 'function') {
+        pendingConfirmCallback();
+      }
+      closeConfirmModal();
+    });
+
+    /**
+     * =====================================================================
+     * RENDER SELURUH HALAMAN PUBLIK
+     * =====================================================================
+     */
+    function renderAllPublicViews() {
+      renderHeroAndStats();
+      renderRegistrationSection();
+      renderArmadaCards();
+      renderPesertaTable();
+      renderTransportTabsAndTable();
+      lucide.createIcons();
+    }
+
+    function renderHeroAndStats() {
+      const { eventInfo, pesertaList, keretaMini, busList } = appState;
+
+      // Update Navbar & Hero Info
+      document.getElementById('nav-edition-pill').textContent = eventInfo.edition;
+      document.getElementById('hero-edition-badge').innerHTML = `
+        <i data-lucide="sparkles" class="w-4 h-4"></i>
+        <span>${escapeHtml(eventInfo.edition)}</span>
+      `;
+      document.getElementById('hero-title').textContent = eventInfo.title;
+      document.getElementById('hero-date').textContent = eventInfo.date;
+      document.getElementById('hero-time').textContent = eventInfo.time;
+      document.getElementById('hero-location').textContent = eventInfo.location;
+      document.getElementById('hero-description').textContent = eventInfo.description;
+
+      // Hitung Statistik
+      const totalPeserta = pesertaList.length;
+      const count1 = (keretaMini[1] || []).length;
+      const count2 = (keretaMini[2] || []).length;
+      const count3 = (keretaMini[3] || []).length;
+      const countBus = (busList || []).length;
+
+      const totalKereta = count1 + count2 + count3;
+      const totalMaxKereta = MAX_UNIT_CAPACITY * 3; // 150 Peserta
+      const sisaKereta = Math.max(0, totalMaxKereta - totalKereta);
+      const sisaBus = Math.max(0, MAX_UNIT_CAPACITY - countBus);
+
+      const fullUnits = [count1, count2, count3, countBus].filter((c) => c >= MAX_UNIT_CAPACITY).length;
+      const availableUnits = 4 - fullUnits;
+
+      document.getElementById('stat-total-peserta').textContent = `${totalPeserta} Peserta`;
+      document.getElementById('stat-total-kereta').textContent = `${totalKereta} / ${totalMaxKereta}`;
+
+      const statSisaKeretaEl = document.getElementById('stat-sisa-kereta');
+      if (sisaKereta === 0) {
+        statSisaKeretaEl.textContent = 'Semua Kereta Mini FULL';
+        statSisaKeretaEl.className = 'text-xs text-red-600 font-bold mt-0.5 truncate';
+      } else {
+        statSisaKeretaEl.textContent = `Sisa ${sisaKereta} kuota tersedia`;
+        statSisaKeretaEl.className = 'text-xs text-emerald-700 font-semibold mt-0.5 truncate';
+      }
+
+      document.getElementById('stat-total-bus').textContent = `${countBus} / ${MAX_UNIT_CAPACITY}`;
+      const statSisaBusEl = document.getElementById('stat-sisa-bus');
+      if (sisaBus === 0) {
+        statSisaBusEl.textContent = 'BUS SUDAH FULL (50/50)';
+        statSisaBusEl.className = 'text-xs text-red-600 font-extrabold mt-0.5 truncate';
+      } else {
+        statSisaBusEl.textContent = `Sisa ${sisaBus} kuota tersedia`;
+        statSisaBusEl.className = 'text-xs text-sky-700 font-semibold mt-0.5 truncate';
+      }
+
+      const statArmadaEl = document.getElementById('stat-status-armada');
+      if (fullUnits === 4) {
+        statArmadaEl.textContent = '4 Armada FULL';
+        statArmadaEl.className = 'text-lg sm:text-xl font-extrabold text-red-600 mt-0.5';
+      } else if (fullUnits === 0) {
+        statArmadaEl.textContent = '4 Armada Tersedia';
+        statArmadaEl.className = 'text-lg sm:text-xl font-extrabold text-emerald-800 mt-0.5';
+      } else {
+        statArmadaEl.textContent = `${fullUnits} FULL • ${availableUnits} Tersedia`;
+        statArmadaEl.className = 'text-lg sm:text-xl font-extrabold text-stone-900 mt-0.5';
+      }
+    }
+
+    /**
+     * RENDER MENU PENDAFTARAN PESERTA, KERETA MINI & BUS (SESUAI MASA BERLAKU ADMIN)
+     */
+    function renderRegistrationSection() {
+      const regState = getRegistrationWindowStatus();
+      const { status, startLabel, endLabel } = regState;
+
+      // Update indikator titik di Navbar Desktop & Mobile
+      const navDot = document.getElementById('nav-reg-dot');
+      const mobileDot = document.getElementById('mobile-reg-dot');
+      const heroPill = document.getElementById('hero-reg-status-pill');
+      const heroWindowText = document.getElementById('hero-reg-window-text');
+      const sectionBadge = document.getElementById('reg-section-status-badge');
+
+      heroWindowText.textContent = `${startLabel} s/d ${endLabel}`;
+      document.getElementById('reg-start-display').textContent = startLabel;
+      document.getElementById('reg-end-display').textContent = endLabel;
+
+      const openContainer = document.getElementById('reg-open-container');
+      const closedContainer = document.getElementById('reg-closed-container');
+
+      if (status === 'OPEN') {
+        navDot.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse';
+        mobileDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-500';
+        heroPill.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-400 text-stone-950';
+        heroPill.innerHTML = `<i data-lucide="door-open" class="w-3.5 h-3.5"></i><span>PENDAFTARAN DIBUKA</span>`;
+
+        sectionBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200';
+        sectionBadge.innerHTML = `<i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i><span>PENDAFTARAN AKTIF / DIBUKA</span>`;
+
+        openContainer.classList.remove('hidden');
+        closedContainer.classList.add('hidden');
+        renderRegistrationGoogleForms();
+      } else {
+        openContainer.classList.add('hidden');
+        closedContainer.classList.remove('hidden');
+
+        const isUpcoming = status === 'UPCOMING';
+        navDot.className = `w-2 h-2 rounded-full ${isUpcoming ? 'bg-amber-500' : 'bg-red-500'}`;
+        mobileDot.className = `w-1.5 h-1.5 rounded-full ${isUpcoming ? 'bg-amber-500' : 'bg-red-500'}`;
+
+        heroPill.className = `inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-extrabold ${
+          isUpcoming ? 'bg-amber-300 text-stone-950' : 'bg-red-500 text-white'
+        }`;
+        heroPill.innerHTML = `<i data-lucide="lock" class="w-3.5 h-3.5"></i><span>${
+          isUpcoming ? 'PENDAFTARAN BELUM DIBUKA' : 'PENDAFTARAN SUDAH DITUTUP'
+        }</span>`;
+
+        sectionBadge.className = `inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold ${
+          isUpcoming
+            ? 'bg-amber-100 text-amber-900 border border-amber-200'
+            : 'bg-red-100 text-red-800 border border-red-200'
+        }`;
+        sectionBadge.innerHTML = `<i data-lucide="lock" class="w-3.5 h-3.5"></i><span>${
+          isUpcoming ? 'BELUM DIBUKA' : 'MASA PENDAFTARAN BERAKHIR'
+        }</span>`;
+
+        const closedIconWrap = document.getElementById('reg-closed-icon-wrap');
+        closedIconWrap.className = `w-14 h-14 rounded-3xl flex items-center justify-center mx-auto mb-3.5 ${
+          isUpcoming ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-600'
+        }`;
+        document.getElementById('reg-closed-title').textContent = isUpcoming
+          ? 'Pendaftaran Belum Dibuka'
+          : 'Masa Berlaku Akses Pendaftaran Telah Berakhir';
+        document.getElementById('reg-closed-desc').textContent = isUpcoming
+          ? `Tautan Google Form pendaftaran akan otomatis dibuka mulai ${startLabel}. Silakan kembali pada waktu tersebut.`
+          : `Akses menu pendaftaran telah ditutup pada ${endLabel}. Silakan pantau daftar peserta yang sudah terdaftar di bawah ini.`;
+        document.getElementById('reg-closed-schedule-note').textContent = `Jadwal Akses: ${startLabel} s/d ${endLabel}`;
+      }
+    }
+
+    /**
+     * RENDER 3 KARTU LINK GOOGLE FORM DARI PANITIA (PESERTA, KERETA MINI, BUS)
+     */
+    function renderRegistrationGoogleForms() {
+      const container = document.getElementById('reg-google-forms-grid');
+      const { formPesertaUrl, formKeretaUrl, formBusUrl } = appState.eventInfo;
+
+      const u1 = getTransportUnitMeta('1');
+      const u2 = getTransportUnitMeta('2');
+      const u3 = getTransportUnitMeta('3');
+      const uBus = getTransportUnitMeta('bus');
+
+      const totalKeretaCount = u1.count + u2.count + u3.count;
+      const totalKeretaMax = MAX_UNIT_CAPACITY * 3;
+      const allKeretaFull = u1.isFull && u2.isFull && u3.isFull;
+      const sisaKereta = Math.max(0, totalKeretaMax - totalKeretaCount);
+
+      const cards = [
+        {
+          title: 'Pendaftaran Peserta MBBC',
+          subtitle: 'Formulir utama keikutsertaan jalan sehat',
+          badgeText: `${appState.pesertaList.length} Terdaftar`,
+          badgeClass: 'bg-emerald-100 text-emerald-800',
+          icon: 'footprints',
+          iconWrapClass: 'bg-emerald-100 text-emerald-800',
+          url: (formPesertaUrl || '').trim(),
+          btnText: 'Buka Google Form Peserta',
+          btnClass: 'bg-emerald-800 hover:bg-emerald-900 text-white',
+          isFull: false,
+          emptyLinkText: 'Link Google Form belum diisi panitia'
+        },
+        {
+          title: 'Pendaftaran Kereta Mini',
+          subtitle: 'Khusus lansia, anak-anak & yang membutuhkan (3 Unit)',
+          badgeText: allKeretaFull ? 'SEMUA FULL (150/150)' : `Sisa ${sisaKereta} dari 150 Kuota`,
+          badgeClass: allKeretaFull ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-900',
+          icon: 'train-front',
+          iconWrapClass: allKeretaFull ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-800',
+          url: (formKeretaUrl || '').trim(),
+          btnText: allKeretaFull ? 'Kereta Mini Sudah Full' : 'Buka Google Form Kereta Mini',
+          btnClass: 'bg-amber-500 hover:bg-amber-600 text-stone-950',
+          isFull: allKeretaFull,
+          emptyLinkText: 'Link Google Form belum diisi panitia'
+        },
+        {
+          title: 'Pendaftaran Bus MBBC',
+          subtitle: 'Armada Bus pendamping kegiatan (Kapasitas 50)',
+          badgeText: uBus.isFull ? 'BUS SUDAH FULL (50/50)' : `Sisa ${uBus.remaining} dari 50 Kuota`,
+          badgeClass: uBus.isFull ? 'bg-red-100 text-red-800' : 'bg-sky-100 text-sky-900',
+          icon: 'bus',
+          iconWrapClass: uBus.isFull ? 'bg-red-100 text-red-700' : 'bg-sky-100 text-sky-800',
+          url: (formBusUrl || '').trim(),
+          btnText: uBus.isFull ? 'Bus Sudah Full (50/50)' : 'Buka Google Form Bus',
+          btnClass: 'bg-sky-700 hover:bg-sky-800 text-white',
+          isFull: uBus.isFull,
+          emptyLinkText: 'Link Form Bus belum diisi panitia'
+        }
+      ];
+
+      container.innerHTML = cards
+        .map((c) => {
+          const canOpen = Boolean(c.url) && !c.isFull;
+
+          return `
+            <div class="rounded-2xl border ${
+              c.isFull ? 'border-red-200 bg-red-50/40' : 'border-stone-200 bg-stone-50/60'
+            } p-5 flex flex-col justify-between gap-4">
+              <div>
+                <div class="flex items-start justify-between gap-2 mb-3">
+                  <div class="w-10 h-10 rounded-2xl ${c.iconWrapClass} flex items-center justify-center shrink-0">
+                    <i data-lucide="${c.icon}" class="w-5 h-5"></i>
+                  </div>
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-extrabold ${c.badgeClass}">
+                    ${escapeHtml(c.badgeText)}
+                  </span>
+                </div>
+                <h3 class="text-base font-extrabold text-stone-900">${escapeHtml(c.title)}</h3>
+                <p class="text-xs text-stone-600 mt-1 leading-relaxed">${escapeHtml(c.subtitle)}</p>
+              </div>
+
+              <div>
+                ${
+                  canOpen
+                    ? `<a
+                        href="${escapeHtml(c.url)}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-xs sm:text-sm font-extrabold ${c.btnClass} shadow-sm hover:shadow transition-all"
+                      >
+                        <span>${escapeHtml(c.btnText)}</span>
+                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                      </a>`
+                    : `<button
+                        type="button"
+                        disabled
+                        class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-xs sm:text-sm font-bold ${
+                          c.isFull
+                            ? 'bg-red-100 text-red-700 border border-red-200'
+                            : 'bg-stone-200 text-stone-500'
+                        } cursor-not-allowed"
+                      >
+                        <i data-lucide="${c.isFull ? 'ban' : 'link-2-off'}" class="w-4 h-4"></i>
+                        <span>${escapeHtml(c.isFull ? c.btnText : c.emptyLinkText)}</span>
+                      </button>`
+                }
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+    }
+
+    /**
+     * RENDER 4 KARTU STATUS ARMADA (KERETA MINI 1, 2, 3 & BUS MBBC)
+     */
+    function renderArmadaCards() {
+      const container = document.getElementById('armada-cards-container');
+      container.innerHTML = '';
+
+      ['1', '2', '3', 'bus'].forEach((unitKey) => {
+        const meta = getTransportUnitMeta(unitKey);
+        const percent = Math.min(100, Math.round((meta.count / MAX_UNIT_CAPACITY) * 100));
+        const isBus = unitKey === 'bus';
+
+        const card = document.createElement('div');
+        card.className = `rounded-3xl p-5 border transition-all flex flex-col justify-between ${
+          meta.isFull
+            ? 'bg-red-50/45 border-red-200 shadow-sm'
+            : 'bg-white border-stone-200/90 shadow-sm hover:shadow-md'
+        }`;
+
+        const iconBgClass = meta.isFull
+          ? 'bg-red-100 text-red-700'
+          : isBus
+          ? 'bg-sky-100 text-sky-800'
+          : 'bg-emerald-100 text-emerald-800';
+
+        const progressColorClass = meta.isFull
+          ? 'bg-red-600'
+          : percent >= 80
+          ? 'bg-amber-500'
+          : isBus
+          ? 'bg-sky-600'
+          : 'bg-emerald-600';
+
+        card.innerHTML = `
+          <div>
+            <!-- Header Kartu Armada -->
+            <div class="flex items-start justify-between gap-2 mb-4">
+              <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${iconBgClass}">
+                  <i data-lucide="${meta.icon}" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="text-base sm:text-lg font-extrabold text-stone-900 leading-tight">${escapeHtml(meta.label)}</h3>
+                  <p class="text-[11px] text-stone-500">Maks. 50 Peserta</p>
+                </div>
+              </div>
+
+              ${
+                meta.isFull
+                  ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-red-600 text-white shadow-xs animate-pulse shrink-0">
+                      <i data-lucide="ban" class="w-3 h-3"></i>
+                      ${meta.fullShortBadge}
+                    </span>`
+                  : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                      isBus ? 'bg-sky-100 text-sky-800' : 'bg-emerald-100 text-emerald-800'
+                    } shrink-0">
+                      <i data-lucide="check-circle-2" class="w-3 h-3"></i>
+                      Tersedia
+                    </span>`
+              }
+            </div>
+
+            <!-- Banner Merah Mencolok Jika Sudah FULL 50/50 -->
+            ${
+              meta.isFull
+                ? `<div class="mb-4 px-3 py-2 rounded-2xl bg-red-600 text-white text-xs font-extrabold text-center tracking-wide shadow-xs">
+                    ${isBus ? 'BUS SUDAH FULL (50/50)' : 'SUDAH FULL (50/50)'}
+                  </div>`
+                : ''
+            }
+
+            <!-- Angka Okupansi & Progress Bar -->
+            <div class="mb-4">
+              <div class="flex items-baseline justify-between mb-1.5">
+                <span class="text-xl sm:text-2xl font-extrabold ${meta.isFull ? 'text-red-700' : 'text-stone-900'}">
+                  ${meta.count} <span class="text-xs font-semibold text-stone-500">/ 50</span>
+                </span>
+                <span class="text-xs font-bold ${
+                  meta.isFull ? 'text-red-600' : isBus ? 'text-sky-700' : 'text-emerald-700'
+                }">
+                  ${meta.isFull ? 'Kuota Penuh' : `Sisa ${meta.remaining} Kuota`}
+                </span>
+              </div>
+              <div class="w-full h-2.5 bg-stone-200/80 rounded-full overflow-hidden">
+                <div
+                  class="h-full rounded-full transition-all duration-500 ${progressColorClass}"
+                  style="width: ${percent}%"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tombol Aksi Lihat Daftar Peserta -->
+          <button
+            type="button"
+            onclick="selectAndScrollToTransport('${unitKey}')"
+            class="w-full mt-1 inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-colors cursor-pointer ${
+              meta.isFull
+                ? 'bg-red-100 hover:bg-red-200 text-red-900'
+                : 'bg-stone-100 hover:bg-emerald-800 text-stone-800 hover:text-white'
+            }"
+          >
+            <span>Lihat Daftar Peserta</span>
+            <i data-lucide="arrow-down-right" class="w-3.5 h-3.5"></i>
+          </button>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function selectAndScrollToTransport(unitKey) {
+      activePublicTransportUnit = String(unitKey);
+      renderTransportTabsAndTable();
+      lucide.createIcons();
+      const targetEl = document.getElementById('transportasi');
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    /**
+     * RENDER TABEL DAFTAR PESERTA MBBC
+     */
+    function renderPesertaTable() {
+      const searchInput = document.getElementById('search-peserta');
+      const clearBtn = document.getElementById('clear-search-peserta');
+      const query = (searchInput.value || '').trim().toLowerCase();
+
+      if (query) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+
+      const allPeserta = appState.pesertaList || [];
+      document.getElementById('peserta-last-update').textContent = appState.pesertaLastUpdate || '-';
+      document.getElementById('peserta-count-badge').textContent = `${allPeserta.length} Peserta`;
+
+      const filtered = allPeserta.filter((item) => {
+        const matchName = item.nama.toLowerCase().includes(query);
+        const matchNo = String(item.nomor).includes(query);
+        return matchName || matchNo;
+      });
+
+      const tbody = document.getElementById('peserta-table-body');
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="3" class="py-12 px-4 text-center text-stone-500">
+              <div class="inline-flex flex-col items-center">
+                <i data-lucide="search-x" class="w-8 h-8 text-stone-300 mb-2"></i>
+                <p class="font-semibold text-sm text-stone-700">Peserta tidak ditemukan</p>
+                <p class="text-xs text-stone-400 mt-0.5">Coba kata kunci pencarian lain atau hapus filter pencarian.</p>
+              </div>
+            </td>
+          </tr>
+        `;
+      } else {
+        tbody.innerHTML = filtered
+          .map(
+            (item) => `
+            <tr class="hover:bg-emerald-50/40 transition-colors">
+              <td class="py-3 px-4 sm:px-6 font-bold text-stone-600">
+                <span class="inline-flex items-center justify-center min-w-[2.25rem] px-2 py-0.5 rounded-lg bg-stone-100 text-stone-700 text-xs font-extrabold">
+                  ${escapeHtml(item.nomor)}
+                </span>
+              </td>
+              <td class="py-3 px-4 sm:px-6 font-semibold text-stone-900">
+                ${escapeHtml(item.nama)}
+              </td>
+              <td class="py-3 px-4 sm:px-6 text-right">
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100/90 text-emerald-800">
+                  <i data-lucide="check" class="w-3 h-3"></i>
+                  Terdaftar
+                </span>
+              </td>
+            </tr>
+          `
+          )
+          .join('');
+      }
+
+      document.getElementById('peserta-table-info').textContent =
+        `Menampilkan ${filtered.length} dari ${allPeserta.length} peserta`;
+      lucide.createIcons();
+    }
+
+    function clearPesertaSearch() {
+      document.getElementById('search-peserta').value = '';
+      renderPesertaTable();
+    }
+
+    /**
+     * RENDER TAB & TABEL DAFTAR PESERTA KERETA MINI (1-3) & BUS MBBC
+     */
+    function renderTransportTabsAndTable() {
+      const tabsContainer = document.getElementById('transport-tabs-container');
+      tabsContainer.innerHTML = ['1', '2', '3', 'bus']
+        .map((unitKey) => {
+          const meta = getTransportUnitMeta(unitKey);
+          const isActive = activePublicTransportUnit === unitKey;
+          const isBus = unitKey === 'bus';
+
+          const activeBg = isBus
+            ? 'bg-sky-800 text-white border-sky-800 shadow-md'
+            : 'bg-emerald-800 text-white border-emerald-800 shadow-md';
+
+          return `
+            <button
+              type="button"
+              onclick="switchPublicTransportTab('${unitKey}')"
+              class="flex items-center justify-between px-4 py-3 rounded-2xl border text-left transition-all cursor-pointer ${
+                isActive
+                  ? activeBg
+                  : 'bg-white hover:bg-stone-50 text-stone-800 border-stone-200'
+              }"
+            >
+              <div class="flex items-center gap-2.5 min-w-0">
+                <i data-lucide="${meta.icon}" class="w-4 h-4 shrink-0 ${
+                  isActive ? 'text-amber-300' : isBus ? 'text-sky-700' : 'text-emerald-700'
+                }"></i>
+                <span class="font-bold text-sm truncate">${escapeHtml(meta.label)}</span>
+              </div>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-extrabold shrink-0 ${
+                meta.isFull
+                  ? 'bg-red-600 text-white'
+                  : isActive
+                  ? 'bg-white/20 text-white'
+                  : isBus
+                  ? 'bg-sky-100 text-sky-800'
+                  : 'bg-emerald-100 text-emerald-800'
+              }">
+                ${meta.isFull ? `FULL (${meta.count}/50)` : `${meta.count}/50`}
+              </span>
+            </button>
+          `;
+        })
+        .join('');
+
+      renderTransportTable();
+    }
+
+    function switchPublicTransportTab(unitKey) {
+      activePublicTransportUnit = String(unitKey);
+      renderTransportTabsAndTable();
+      lucide.createIcons();
+    }
+
+    function renderTransportTable() {
+      const meta = getTransportUnitMeta(activePublicTransportUnit);
+      const isBus = meta.key === 'bus';
+
+      document.getElementById('transport-last-update').textContent = meta.lastUpdate;
+
+      // Update Pill Status Aktif di Header
+      const activePill = document.getElementById('transport-active-pill');
+      if (meta.isFull) {
+        activePill.textContent = meta.fullTitle;
+        activePill.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold bg-red-100 text-red-800 border border-red-200';
+      } else {
+        activePill.textContent = `${meta.label} • ${meta.count}/50 Peserta (Sisa ${meta.remaining})`;
+        activePill.className = `inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${
+          isBus ? 'bg-sky-100 text-sky-800' : 'bg-emerald-100 text-emerald-800'
+        }`;
+      }
+
+      // Tampilkan / Sembunyikan Banner Peringatan FULL (Kereta Mini maupun Bus)
+      const fullBanner = document.getElementById('transport-full-banner');
+      if (meta.isFull) {
+        document.getElementById('transport-full-banner-title').textContent = meta.fullTitle;
+        document.getElementById('transport-full-banner-desc').textContent = isBus
+          ? 'Kuota maksimal 50 peserta pada Bus MBBC telah terisi penuh. Silakan cek ketersediaan kuota pada Kereta Mini lainnya.'
+          : 'Kuota maksimal 50 peserta pada armada Kereta Mini ini telah terisi penuh. Silakan cek ketersediaan kuota pada Kereta Mini lainnya atau Bus MBBC.';
+        fullBanner.classList.remove('hidden');
+      } else {
+        fullBanner.classList.add('hidden');
+      }
+
+      // Filter Pencarian
+      const searchInput = document.getElementById('search-transport');
+      const clearBtn = document.getElementById('clear-search-transport');
+      const query = (searchInput.value || '').trim().toLowerCase();
+
+      if (query) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+
+      const filtered = meta.list
+        .map((item, idx) => ({
+          noUrut: item.nomor ?? idx + 1,
+          nama: item.nama
+        }))
+        .filter((item) => {
+          const matchName = item.nama.toLowerCase().includes(query);
+          const matchNo = String(item.noUrut).includes(query);
+          return matchName || matchNo;
+        });
+
+      const tbody = document.getElementById('transport-table-body');
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="2" class="py-12 px-4 text-center text-stone-500">
+              <div class="inline-flex flex-col items-center">
+                <i data-lucide="users" class="w-8 h-8 text-stone-300 mb-2"></i>
+                <p class="font-semibold text-sm text-stone-700">
+                  ${meta.count === 0 ? `Belum ada peserta di ${escapeHtml(meta.label)}` : 'Peserta tidak ditemukan'}
+                </p>
+                <p class="text-xs text-stone-400 mt-0.5">
+                  ${meta.count === 0 ? 'Tersedia 50 kuota peserta pada armada ini.' : 'Coba kata kunci pencarian lain.'}
+                </p>
+              </div>
+            </td>
+          </tr>
+        `;
+      } else {
+        tbody.innerHTML = filtered
+          .map(
+            (item) => `
+            <tr class="${isBus ? 'hover:bg-sky-50/40' : 'hover:bg-amber-50/40'} transition-colors">
+              <td class="py-3 px-4 sm:px-6 font-bold text-stone-700">
+                <span class="inline-flex items-center justify-center min-w-[2.25rem] px-2.5 py-1 rounded-xl ${
+                  isBus ? 'bg-sky-100/80 text-sky-900' : 'bg-amber-100/80 text-amber-900'
+                } text-xs font-extrabold">
+                  ${escapeHtml(item.noUrut)}
+                </span>
+              </td>
+              <td class="py-3 px-4 sm:px-6 font-semibold text-stone-900">
+                ${escapeHtml(item.nama)}
+              </td>
+            </tr>
+          `
+          )
+          .join('');
+      }
+
+      document.getElementById('transport-table-info').textContent =
+        `Menampilkan ${filtered.length} dari ${meta.count} peserta ${meta.label} (Kapasitas Maks. 50 Peserta)`;
+      lucide.createIcons();
+    }
+
+    function clearTransportSearch() {
+      document.getElementById('search-transport').value = '';
+      renderTransportTable();
+    }
+
+    /**
+     * =====================================================================
+     * AUTENTIKASI & KONTROL MODAL ADMIN
+     * =====================================================================
+     */
+    function handleAdminButtonClick() {
+      if (isAdminLoggedIn) {
+        openAdminPanel();
+      } else {
+        openLoginModal();
+      }
+    }
+
+    function openLoginModal() {
+      const modal = document.getElementById('modal-admin-login');
+      const input = document.getElementById('admin-pin-input');
+      const errorEl = document.getElementById('admin-pin-error');
+      input.value = '';
+      errorEl.classList.add('hidden');
+      modal.classList.remove('hidden');
+      lucide.createIcons();
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function closeLoginModal() {
+      document.getElementById('modal-admin-login').classList.add('hidden');
+      document.getElementById('admin-pin-error').classList.add('hidden');
+    }
+
+    function fillDemoPin() {
+      const input = document.getElementById('admin-pin-input');
+      input.value = ADMIN_PIN;
+      document.getElementById('admin-pin-error').classList.add('hidden');
+      input.focus();
+    }
+
+    function submitAdminLogin(event) {
+      event.preventDefault();
+      const inputVal = (document.getElementById('admin-pin-input').value || '').trim();
+      const errorEl = document.getElementById('admin-pin-error');
+
+      if (inputVal === ADMIN_PIN) {
+        isAdminLoggedIn = true;
+        document.getElementById('btn-mode-admin-label').textContent = 'Panel Admin';
+        closeLoginModal();
+        openAdminPanel();
+        showToast('Berhasil masuk ke Panel Admin MBBC.', 'success');
+      } else {
+        errorEl.classList.remove('hidden');
+      }
+    }
+
+    function openAdminPanel() {
+      populateAdminInfoForm();
+      renderAdminPesertaSection();
+      renderAdminTransportSection();
+      document.getElementById('modal-admin-panel').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeAdminPanel() {
+      document.getElementById('modal-admin-panel').classList.add('hidden');
+    }
+
+    function logoutAdmin() {
+      isAdminLoggedIn = false;
+      document.getElementById('btn-mode-admin-label').textContent = 'Mode Admin';
+      closeAdminPanel();
+      showToast('Anda telah keluar dari Mode Admin.', 'success');
+    }
+
+    function switchAdminTab(tabName) {
+      const tabs = ['info', 'peserta', 'transport'];
+      tabs.forEach((tab) => {
+        const btn = document.getElementById(`admin-tab-btn-${tab}`);
+        const content = document.getElementById(`admin-tab-content-${tab}`);
+        if (tab === tabName) {
+          btn.className = 'inline-flex items-center gap-2 px-4 py-3 rounded-t-2xl text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer bg-white text-emerald-800 border-emerald-700';
+          content.classList.remove('hidden');
+        } else {
+          btn.className = 'inline-flex items-center gap-2 px-4 py-3 rounded-t-2xl text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer text-stone-600 border-transparent hover:text-stone-900';
+          content.classList.add('hidden');
+        }
+      });
+
+      if (tabName === 'info') populateAdminInfoForm();
+      if (tabName === 'peserta') renderAdminPesertaSection();
+      if (tabName === 'transport') renderAdminTransportSection();
+      lucide.createIcons();
+    }
+
+    function confirmResetDemoData() {
+      openConfirmModal(
+        'Reset ke Data Contoh?',
+        'Seluruh perubahan data kegiatan, masa pendaftaran, daftar peserta, kereta mini, dan bus akan dikembalikan ke data simulasi awal.',
+        () => {
+          appState = getDefaultDemoData();
+          renderAllPublicViews();
+          populateAdminInfoForm();
+          renderAdminPesertaSection();
+          renderAdminTransportSection();
+          showToast('Data berhasil dikembalikan ke data contoh awal.', 'success');
+        }
+      );
+    }
+
+    /**
+     * =====================================================================
+     * TAB ADMIN 1: KELOLA INFO KEGIATAN & MASA BERLAKU MENU PENDAFTARAN
+     * =====================================================================
+     */
+    function updateAdminRegLiveBadge() {
+      const startVal = document.getElementById('input-reg-start').value;
+      const endVal = document.getElementById('input-reg-end').value;
+      const startMs = startVal ? new Date(startVal).getTime() : 0;
+      const endMs = endVal ? new Date(endVal).getTime() : Infinity;
+      const nowMs = Date.now();
+
+      const pill = document.getElementById('admin-reg-live-pill');
+      if (startMs && nowMs < startMs) {
+        pill.textContent = 'Preview Status: BELUM DIBUKA';
+        pill.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold bg-amber-200 text-amber-950 self-start sm:self-center';
+      } else if (endMs && nowMs > endMs) {
+        pill.textContent = 'Preview Status: SUDAH DITUTUP';
+        pill.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold bg-red-200 text-red-900 self-start sm:self-center';
+      } else {
+        pill.textContent = 'Preview Status: DIBUKA';
+        pill.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 self-start sm:self-center';
+      }
+    }
+
+    function populateAdminInfoForm() {
+      const info = appState.eventInfo;
+      const reg = appState.regWindow || {};
+
+      document.getElementById('input-reg-start').value = reg.start || '';
+      document.getElementById('input-reg-end').value = reg.end || '';
+      updateAdminRegLiveBadge();
+
+      document.getElementById('input-event-edition').value = info.edition || '';
+      document.getElementById('input-event-date').value = info.date || '';
+      document.getElementById('input-event-title').value = info.title || '';
+      document.getElementById('input-event-time').value = info.time || '';
+      document.getElementById('input-event-location').value = info.location || '';
+      document.getElementById('input-event-description').value = info.description || '';
+      document.getElementById('input-event-form-peserta').value = info.formPesertaUrl || '';
+      document.getElementById('input-event-form-kereta').value = info.formKeretaUrl || '';
+      document.getElementById('input-event-form-bus').value = info.formBusUrl || '';
+    }
+
+    document.getElementById('input-reg-start').addEventListener('change', updateAdminRegLiveBadge);
+    document.getElementById('input-reg-end').addEventListener('change', updateAdminRegLiveBadge);
+
+    function applyQuickRegPreset(preset) {
+      const now = new Date();
+      let startObj, endObj;
+
+      if (preset === 'open7days') {
+        startObj = new Date(now.getTime() - 60 * 1000); // 1 menit lalu
+        endObj = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 hari lagi
+      } else if (preset === 'upcoming') {
+        startObj = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Besok
+        endObj = new Date(now.getTime() + 8 * 24 * 60 * 60 * 1000);
+      } else if (preset === 'closeNow') {
+        startObj = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+        endObj = new Date(now.getTime() - 60 * 1000); // 1 menit lalu
+      }
+
+      document.getElementById('input-reg-start').value = toDateTimeLocalString(startObj);
+      document.getElementById('input-reg-end').value = toDateTimeLocalString(endObj);
+      updateAdminRegLiveBadge();
+    }
+
+    function saveEventAndRegSettings(event) {
+      event.preventDefault();
+      const regStart = document.getElementById('input-reg-start').value;
+      const regEnd = document.getElementById('input-reg-end').value;
+
+      if (regStart && regEnd && new Date(regEnd).getTime() <= new Date(regStart).getTime()) {
+        showToast('Tanggal & jam berakhir pendaftaran harus setelah tanggal & jam mulai!', 'error');
+        return;
+      }
+
+      appState.regWindow = {
+        start: regStart,
+        end: regEnd
+      };
+
+      appState.eventInfo = {
+        edition: document.getElementById('input-event-edition').value.trim(),
+        date: document.getElementById('input-event-date').value.trim(),
+        title: document.getElementById('input-event-title').value.trim(),
+        time: document.getElementById('input-event-time').value.trim(),
+        location: document.getElementById('input-event-location').value.trim(),
+        description: document.getElementById('input-event-description').value.trim(),
+        formPesertaUrl: document.getElementById('input-event-form-peserta').value.trim(),
+        formKeretaUrl: document.getElementById('input-event-form-kereta').value.trim(),
+        formBusUrl: document.getElementById('input-event-form-bus').value.trim()
+      };
+
+      renderAllPublicViews();
+      updateAdminRegLiveBadge();
+      showToast('Pengaturan kegiatan & masa berlaku pendaftaran berhasil disimpan!', 'success');
+    }
+
+    /**
+     * =====================================================================
+     * HELPER PARSING EXCEL / CSV / COPY-PASTE MASSAL
+     * =====================================================================
+     */
+    function parseSpreadsheetRows(rows) {
+      if (!Array.isArray(rows) || rows.length === 0) return [];
+
+      const cleanedRows = rows
+        .map((row) => (Array.isArray(row) ? row.map((cell) => String(cell ?? '').trim()) : []))
+        .filter((row) => row.some((cell) => cell !== ''));
+
+      if (cleanedRows.length === 0) return [];
+
+      // Deteksi baris header pada baris pertama
+      const firstRowJoined = cleanedRows[0].join(' ').toLowerCase();
+      const hasHeader =
+        (/\b(no|nomor|urut)\b/.test(firstRowJoined) && /\b(nama|peserta)\b/.test(firstRowJoined)) ||
+        (cleanedRows[0].length === 1 && /^(nama|nama peserta|peserta)$/i.test(cleanedRows[0][0]));
+
+      const dataRows = hasHeader ? cleanedRows.slice(1) : cleanedRows;
+      const result = [];
+
+      dataRows.forEach((row) => {
+        const nonEmpty = row.filter((c) => c !== '');
+        if (nonEmpty.length === 0) return;
+
+        if (nonEmpty.length >= 2) {
+          const maybeNum = parseInt(nonEmpty[0], 10);
+          if (!isNaN(maybeNum) && String(maybeNum) === nonEmpty[0].replace(/\.$/, '')) {
+            const nama = nonEmpty[1];
+            if (nama) result.push({ nomor: maybeNum, nama });
+          } else {
+            result.push({ nomor: null, nama: nonEmpty[0] });
+          }
+        } else {
+          // Satu kolom: cek apakah formatnya "1. Nama Peserta"
+          const single = nonEmpty[0];
+          const match = single.match(/^(\d+)\s*[.,\-:|)]\s*(.+)$/);
+          if (match) {
+            result.push({ nomor: parseInt(match[1], 10), nama: match[2].trim() });
+          } else {
+            result.push({ nomor: null, nama: single });
+          }
+        }
+      });
+
+      return result;
+    }
+
+    function parsePastedText(rawText) {
+      const lines = (rawText || '')
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter((line) => line !== '');
+
+      if (lines.length === 0) return [];
+
+      // Lewati baris header jika ada
+      const firstLower = lines[0].toLowerCase();
+      const startIndex =
+        (/\b(no|nomor|urut)\b/.test(firstLower) && /\b(nama|peserta)\b/.test(firstLower)) ||
+        /^(nama|nama peserta|peserta)$/.test(firstLower)
+          ? 1
+          : 0;
+
+      const parsed = [];
+      for (let i = startIndex; i < lines.length; i++) {
+        const line = lines[i];
+        // Format: "1, Nama" | "1. Nama" | "1\tNama" | "1 - Nama"
+        const sepMatch = line.match(/^(\d+)\s*[,.\-\t|:;)]\s*(.+)$/);
+        if (sepMatch) {
+          const nama = sepMatch[2].trim();
+          if (nama) parsed.push({ nomor: parseInt(sepMatch[1], 10), nama });
+          continue;
+        }
+
+        // Format: "1 Nama Peserta"
+        const spaceMatch = line.match(/^(\d+)\s+([A-Za-zÀ-ÿ].+)$/);
+        if (spaceMatch) {
+          parsed.push({ nomor: parseInt(spaceMatch[1], 10), nama: spaceMatch[2].trim() });
+          continue;
+        }
+
+        // Hanya nama peserta
+        parsed.push({ nomor: null, nama: line });
+      }
+
+      return parsed;
+    }
+
+    function downloadSampleExcel(type) {
+      if (typeof XLSX === 'undefined') {
+        showToast('Library Excel belum siap. Silakan coba beberapa saat lagi.', 'error');
+        return;
+      }
+
+      let sampleData, sheetName, fileName;
+
+      if (type === 'peserta') {
+        sampleData = [
+          ['Nomor', 'Nama Peserta'],
+          [1, 'Ignatius Joko Susilo'],
+          [2, 'Maria Magdalena Sri Wahyuni'],
+          [3, 'Antonius Bambang Wijanarko'],
+          [4, 'Theresia Endang Sulastri'],
+          [5, 'Yohanes Baptista Sudarman']
+        ];
+        sheetName = 'Peserta_MBBC';
+        fileName = 'Contoh_Daftar_Peserta_MBBC.xlsx';
+      } else if (type === 'bus') {
+        sampleData = [
+          ['No. Urut', 'Nama Peserta'],
+          [1, 'Bapak Antonius Sutrisno'],
+          [2, 'Ibu Maria Goretti Partini'],
+          [3, 'Bapak Yohanes Bosco Suparman'],
+          [4, 'Ibu Theresia Wagirah'],
+          [5, 'Bapak Fransiskus Asisi Suyadi']
+        ];
+        sheetName = 'Peserta_Bus_MBBC';
+        fileName = 'Contoh_Daftar_Peserta_Bus_MBBC.xlsx';
+      } else {
+        sampleData = [
+          ['No. Urut', 'Nama Peserta'],
+          [1, 'Eyang Kakung Hardjo Suwito'],
+          [2, 'Eyang Putri Hardjo Suwito'],
+          [3, 'Ibu Theresia Sukiyem'],
+          [4, 'Adik Gabriel Nathan Wijanarko'],
+          [5, 'Ibu Emilia Tukinem']
+        ];
+        sheetName = 'Kereta_Mini';
+        fileName = 'Contoh_Peserta_Kereta_Mini.xlsx';
+      }
+
+      const worksheet = XLSX.utils.aoa_to_sheet(sampleData);
+      worksheet['!cols'] = [{ wch: 12 }, { wch: 36 }];
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+      XLSX.writeFile(workbook, fileName);
+      showToast('File contoh Excel berhasil diunduh.', 'success');
+    }
+
+    /**
+     * =====================================================================
+     * TAB ADMIN 2: KELOLA DAFTAR PESERTA MBBC
+     * =====================================================================
+     */
+    function renderAdminPesertaSection() {
+      document.getElementById('input-peserta-update').value = appState.pesertaLastUpdate || '';
+      const list = appState.pesertaList || [];
+      document.getElementById('admin-peserta-list-title').textContent =
+        `Daftar Peserta Terdaftar (${list.length} Peserta)`;
+
+      const listBody = document.getElementById('admin-peserta-list-body');
+      if (list.length === 0) {
+        listBody.innerHTML = `
+          <div class="p-8 text-center text-xs sm:text-sm text-stone-400">
+            Belum ada data peserta. Silakan unggah file Excel/CSV atau tambahkan secara manual di atas.
+          </div>
+        `;
+        return;
+      }
+
+      listBody.innerHTML = list
+        .map(
+          (item, index) => `
+          <div class="px-4 py-2.5 flex items-center justify-between gap-3 hover:bg-stone-50">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="inline-flex items-center justify-center min-w-[2rem] px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 text-xs font-extrabold shrink-0">
+                ${escapeHtml(item.nomor)}
+              </span>
+              <span class="text-xs sm:text-sm font-semibold text-stone-800 truncate">
+                ${escapeHtml(item.nama)}
+              </span>
+            </div>
+            <button
+              type="button"
+              onclick="deleteSinglePeserta(${index})"
+              class="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer shrink-0"
+              title="Hapus peserta ini"
+            >
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        `
+        )
+        .join('');
+      lucide.createIcons();
+    }
+
+    function setPesertaTimestampNow() {
+      const nowStr = getCurrentIndonesianTimestamp();
+      document.getElementById('input-peserta-update').value = nowStr;
+      appState.pesertaLastUpdate = nowStr;
+      renderPesertaTable();
+      showToast('Tanggal update peserta diatur ke waktu sekarang.', 'success');
+    }
+
+    function savePesertaManualTimestamp() {
+      const val = (document.getElementById('input-peserta-update').value || '').trim();
+      if (!val) {
+        showToast('Tanggal update tidak boleh kosong.', 'warning');
+        return;
+      }
+      appState.pesertaLastUpdate = val;
+      renderPesertaTable();
+      showToast('Tanggal update daftar peserta berhasil disimpan.', 'success');
+    }
+
+    function applyPesertaImport(entries, mode) {
+      if (!entries || entries.length === 0) {
+        showToast('Tidak ada data nama peserta valid yang ditemukan.', 'warning');
+        return;
+      }
+
+      if (mode === 'replace') {
+        appState.pesertaList = entries.map((item, idx) => ({
+          nomor: item.nomor !== null && !isNaN(item.nomor) ? item.nomor : idx + 1,
+          nama: item.nama
+        }));
+      } else {
+        const current = appState.pesertaList || [];
+        let maxNo = current.reduce((max, item) => Math.max(max, Number(item.nomor) || 0), 0);
+        const appended = entries.map((item) => {
+          const assignedNo = item.nomor !== null && !isNaN(item.nomor) ? item.nomor : ++maxNo;
+          if (assignedNo > maxNo) maxNo = assignedNo;
+          return { nomor: assignedNo, nama: item.nama };
+        });
+        appState.pesertaList = [...current, ...appended];
+      }
+
+      appState.pesertaLastUpdate = getCurrentIndonesianTimestamp();
+      renderAllPublicViews();
+      renderAdminPesertaSection();
+      showToast(`Berhasil memuat ${entries.length} peserta MBBC!`, 'success');
+    }
+
+    function handlePesertaFileUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const modeEl = document.querySelector('input[name="peserta-import-mode"]:checked');
+      const mode = modeEl ? modeEl.value : 'replace';
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+          const entries = parseSpreadsheetRows(rows);
+          applyPesertaImport(entries, mode);
+        } catch (err) {
+          console.error(err);
+          showToast('Gagal membaca file Excel/CSV. Pastikan format file valid.', 'error');
+        } finally {
+          event.target.value = '';
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function handlePesertaBulkPaste() {
+      const textarea = document.getElementById('paste-peserta-textarea');
+      const modeEl = document.querySelector('input[name="peserta-paste-mode"]:checked');
+      const mode = modeEl ? modeEl.value : 'replace';
+
+      const entries = parsePastedText(textarea.value);
+      if (entries.length === 0) {
+        showToast('Silakan tempel daftar nama peserta terlebih dahulu.', 'warning');
+        return;
+      }
+
+      applyPesertaImport(entries, mode);
+      textarea.value = '';
+    }
+
+    function handleAddSinglePeserta(event) {
+      event.preventDefault();
+      const noInput = document.getElementById('single-peserta-no');
+      const nameInput = document.getElementById('single-peserta-name');
+      const nama = (nameInput.value || '').trim();
+      if (!nama) return;
+
+      const current = appState.pesertaList || [];
+      const maxNo = current.reduce((max, item) => Math.max(max, Number(item.nomor) || 0), 0);
+      const customNo = parseInt(noInput.value, 10);
+      const nomor = !isNaN(customNo) && customNo > 0 ? customNo : maxNo + 1;
+
+      current.push({ nomor, nama });
+      appState.pesertaList = current;
+      appState.pesertaLastUpdate = getCurrentIndonesianTimestamp();
+      renderAllPublicViews();
+      renderAdminPesertaSection();
+
+      noInput.value = '';
+      nameInput.value = '';
+      showToast(`Peserta "${nama}" berhasil ditambahkan.`, 'success');
+    }
+
+    function deleteSinglePeserta(index) {
+      const list = appState.pesertaList || [];
+      const removed = list[index];
+      if (!removed) return;
+
+      list.splice(index, 1);
+      appState.pesertaList = list;
+      appState.pesertaLastUpdate = getCurrentIndonesianTimestamp();
+      renderAllPublicViews();
+      renderAdminPesertaSection();
+      showToast(`Peserta "${removed.nama}" dihapus.`, 'success');
+    }
+
+    function confirmClearAllPeserta() {
+      openConfirmModal(
+        'Hapus Semua Daftar Peserta?',
+        'Seluruh nama pada Daftar Peserta MBBC akan dikosongkan. Tindakan ini tidak dapat dibatalkan.',
+        () => {
+          appState.pesertaList = [];
+          appState.pesertaLastUpdate = getCurrentIndonesianTimestamp();
+          renderAllPublicViews();
+          renderAdminPesertaSection();
+          showToast('Seluruh daftar peserta telah dikosongkan.', 'success');
+        }
+      );
+    }
+
+    /**
+     * =====================================================================
+     * TAB ADMIN 3: KELOLA KERETA MINI (1-3) & BUS MBBC (MAKS. 50 PESERTA)
+     * =====================================================================
+     */
+    function renderAdminTransportSection() {
+      const unitKey = activeAdminTransportUnit;
+      const meta = getTransportUnitMeta(unitKey);
+      const isBus = unitKey === 'bus';
+
+      // Render 4 tombol pilihan armada di Admin
+      const selectorContainer = document.getElementById('admin-transport-selector');
+      selectorContainer.innerHTML = ['1', '2', '3', 'bus']
+        .map((uKey) => {
+          const uMeta = getTransportUnitMeta(uKey);
+          const isSelected = uKey === unitKey;
+          const uIsBus = uKey === 'bus';
+
+          return `
+            <button
+              type="button"
+              onclick="selectAdminTransportUnit('${uKey}')"
+              class="p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex items-center justify-between gap-2 ${
+                isSelected
+                  ? uIsBus
+                    ? 'bg-sky-800 text-white border-sky-800 shadow-sm'
+                    : 'bg-emerald-800 text-white border-emerald-800 shadow-sm'
+                  : 'bg-white hover:bg-stone-50 text-stone-800 border-stone-200'
+              }"
+            >
+              <div class="min-w-0">
+                <p class="font-extrabold text-sm truncate">${escapeHtml(uMeta.label)}</p>
+                <p class="text-[11px] ${
+                  isSelected
+                    ? uIsBus
+                      ? 'text-sky-200'
+                      : 'text-emerald-200'
+                    : 'text-stone-500'
+                }">
+                  ${uMeta.isFull ? 'Kapasitas Penuh' : `Sisa ${uMeta.remaining} kuota`}
+                </p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-extrabold shrink-0 ${
+                uMeta.isFull
+                  ? 'bg-red-600 text-white'
+                  : isSelected
+                  ? 'bg-white/20 text-white'
+                  : uIsBus
+                  ? 'bg-sky-100 text-sky-800'
+                  : 'bg-emerald-100 text-emerald-800'
+              }">
+                ${uMeta.isFull ? `FULL (${uMeta.count}/50)` : `${uMeta.count}/50`}
+              </span>
+            </button>
+          `;
+        })
+        .join('');
+
+      // Alert FULL di Admin
+      const fullAlert = document.getElementById('admin-transport-full-alert');
+      if (meta.isFull) {
+        document.getElementById('admin-transport-full-alert-text').textContent = isBus
+          ? 'Bus MBBC sudah mencapai kapasitas maksimal 50 peserta (BUS SUDAH FULL).'
+          : `${meta.label} sudah mencapai kapasitas maksimal 50 peserta (SUDAH FULL).`;
+        fullAlert.classList.remove('hidden');
+      } else {
+        fullAlert.classList.add('hidden');
+      }
+
+      // Update label & input berdasarkan armada aktif
+      document.getElementById('label-transport-update').textContent = isBus
+        ? 'Tanggal & Waktu Update Daftar Bus MBBC'
+        : 'Tanggal & Waktu Update Daftar Kereta Mini';
+      document.getElementById('input-transport-update').value = meta.lastUpdate;
+      document.getElementById('admin-transport-upload-title').textContent = `Unggah Excel / CSV ${meta.label}`;
+      document.getElementById('admin-transport-paste-title').textContent = `Tempel Massal ke ${meta.label}`;
+      document.getElementById('admin-transport-single-label').textContent =
+        `Tambah Peserta ke ${meta.label} (Nomor Urut Otomatis 1–50)`;
+      document.getElementById('admin-transport-list-title').textContent =
+        `Peserta ${meta.label} (${meta.count} / 50 Peserta)${meta.isFull ? (isBus ? ' — BUS SUDAH FULL' : ' — SUDAH FULL') : ''}`;
+      document.getElementById('btn-clear-transport-label').textContent = `Kosongkan ${meta.label}`;
+
+      // Nonaktifkan tombol tambah satuan jika sudah 50/50 FULL
+      const singleInput = document.getElementById('single-transport-name');
+      const addSingleBtn = document.getElementById('btn-add-single-transport');
+      if (meta.isFull) {
+        singleInput.disabled = true;
+        singleInput.placeholder = `${meta.label} sudah FULL (50/50 peserta)`;
+        addSingleBtn.disabled = true;
+        addSingleBtn.className = 'inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-stone-300 text-stone-500 cursor-not-allowed shrink-0';
+      } else {
+        singleInput.disabled = false;
+        singleInput.placeholder = `Masukkan nama peserta ${meta.label}...`;
+        addSingleBtn.disabled = false;
+        addSingleBtn.className = 'inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-700 hover:bg-emerald-800 text-white cursor-pointer shrink-0';
+      }
+
+      // Render daftar peserta armada aktif
+      const listBody = document.getElementById('admin-transport-list-body');
+      if (meta.list.length === 0) {
+        listBody.innerHTML = `
+          <div class="p-8 text-center text-xs sm:text-sm text-stone-400">
+            Belum ada peserta terdaftar di ${escapeHtml(meta.label)} (0 / 50 Peserta).
+          </div>
+        `;
+      } else {
+        listBody.innerHTML = meta.list
+          .map(
+            (item, index) => `
+            <div class="px-4 py-2.5 flex items-center justify-between gap-3 hover:bg-stone-50">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="inline-flex items-center justify-center min-w-[2rem] px-2 py-0.5 rounded-lg ${
+                  isBus ? 'bg-sky-100 text-sky-900' : 'bg-amber-100 text-amber-900'
+                } text-xs font-extrabold shrink-0">
+                  ${index + 1}
+                </span>
+                <span class="text-xs sm:text-sm font-semibold text-stone-800 truncate">
+                  ${escapeHtml(item.nama)}
+                </span>
+              </div>
+              <button
+                type="button"
+                onclick="deleteSingleTransportParticipant(${index})"
+                class="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer shrink-0"
+                title="Hapus peserta dari ${escapeHtml(meta.label)}"
+              >
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          `
+          )
+          .join('');
+      }
+
+      lucide.createIcons();
+    }
+
+    function selectAdminTransportUnit(unitKey) {
+      activeAdminTransportUnit = String(unitKey);
+      renderAdminTransportSection();
+    }
+
+    function setTransportTimestampNow() {
+      const nowStr = getCurrentIndonesianTimestamp();
+      document.getElementById('input-transport-update').value = nowStr;
+      if (activeAdminTransportUnit === 'bus') {
+        appState.busLastUpdate = nowStr;
+      } else {
+        appState.keretaLastUpdate = nowStr;
+      }
+      renderTransportTabsAndTable();
+      showToast('Tanggal update diatur ke waktu sekarang.', 'success');
+    }
+
+    function saveTransportManualTimestamp() {
+      const val = (document.getElementById('input-transport-update').value || '').trim();
+      if (!val) {
+        showToast('Tanggal update tidak boleh kosong.', 'warning');
+        return;
+      }
+      if (activeAdminTransportUnit === 'bus') {
+        appState.busLastUpdate = val;
+      } else {
+        appState.keretaLastUpdate = val;
+      }
+      renderTransportTabsAndTable();
+      showToast('Tanggal update berhasil disimpan.', 'success');
+    }
+
+    function applyTransportImport(entries, mode) {
+      const unitKey = activeAdminTransportUnit;
+      const meta = getTransportUnitMeta(unitKey);
+      const isBus = unitKey === 'bus';
+
+      if (!entries || entries.length === 0) {
+        showToast('Tidak ada data nama peserta valid yang ditemukan.', 'warning');
+        return;
+      }
+
+      const existing = mode === 'replace' ? [] : [...meta.list];
+      const availableSlots = MAX_UNIT_CAPACITY - existing.length;
+
+      if (availableSlots <= 0) {
+        showToast(
+          `${meta.label} sudah FULL (50/50 peserta). Tidak dapat menambah peserta lagi.`,
+          'error'
+        );
+        return;
+      }
+
+      const accepted = entries.slice(0, availableSlots);
+      const ignoredCount = entries.length - accepted.length;
+
+      const combined = [...existing, ...accepted].map((item, idx) => ({
+        nomor: idx + 1,
+        nama: item.nama
+      }));
+
+      const nowStamp = getCurrentIndonesianTimestamp();
+      if (isBus) {
+        appState.busList = combined;
+        appState.busLastUpdate = nowStamp;
+      } else {
+        appState.keretaMini[Number(unitKey)] = combined;
+        appState.keretaLastUpdate = nowStamp;
+      }
+
+      activePublicTransportUnit = unitKey;
+      renderAllPublicViews();
+      renderAdminTransportSection();
+
+      const fullLabel = isBus ? 'BUS SUDAH FULL (50/50)' : 'SUDAH FULL (50/50)';
+
+      if (ignoredCount > 0) {
+        showToast(
+          `Berhasil memuat ${accepted.length} peserta ke ${meta.label} (${fullLabel}). ${ignoredCount} nama berlebih dilewati karena batas maksimal 50 peserta.`,
+          'warning'
+        );
+      } else if (combined.length >= MAX_UNIT_CAPACITY) {
+        showToast(
+          `Berhasil memuat ${accepted.length} peserta. ${meta.label} kini ${fullLabel}!`,
+          'success'
+        );
+      } else {
+        showToast(
+          `Berhasil memuat ${accepted.length} peserta ke ${meta.label} (${combined.length}/50).`,
+          'success'
+        );
+      }
+    }
+
+    function handleTransportFileUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const modeEl = document.querySelector('input[name="transport-import-mode"]:checked');
+      const mode = modeEl ? modeEl.value : 'replace';
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+          const entries = parseSpreadsheetRows(rows);
+          applyTransportImport(entries, mode);
+        } catch (err) {
+          console.error(err);
+          showToast('Gagal membaca file Excel/CSV. Pastikan format file valid.', 'error');
+        } finally {
+          event.target.value = '';
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function handleTransportBulkPaste() {
+      const textarea = document.getElementById('paste-transport-textarea');
+      const modeEl = document.querySelector('input[name="transport-paste-mode"]:checked');
+      const mode = modeEl ? modeEl.value : 'replace';
+
+      const entries = parsePastedText(textarea.value);
+      if (entries.length === 0) {
+        showToast('Silakan tempel daftar nama peserta terlebih dahulu.', 'warning');
+        return;
+      }
+
+      applyTransportImport(entries, mode);
+      textarea.value = '';
+    }
+
+    function handleAddSingleTransport(event) {
+      event.preventDefault();
+      const unitKey = activeAdminTransportUnit;
+      const meta = getTransportUnitMeta(unitKey);
+      const isBus = unitKey === 'bus';
+
+      if (meta.isFull) {
+        showToast(`${meta.label} sudah FULL (50/50 peserta)!`, 'error');
+        return;
+      }
+
+      const input = document.getElementById('single-transport-name');
+      const nama = (input.value || '').trim();
+      if (!nama) return;
+
+      const updated = [...meta.list, { nomor: meta.count + 1, nama }].map((item, idx) => ({
+        nomor: idx + 1,
+        nama: item.nama
+      }));
+
+      const nowStamp = getCurrentIndonesianTimestamp();
+      if (isBus) {
+        appState.busList = updated;
+        appState.busLastUpdate = nowStamp;
+      } else {
+        appState.keretaMini[Number(unitKey)] = updated;
+        appState.keretaLastUpdate = nowStamp;
+      }
+
+      activePublicTransportUnit = unitKey;
+      renderAllPublicViews();
+      renderAdminTransportSection();
+
+      input.value = '';
+      if (updated.length >= MAX_UNIT_CAPACITY) {
+        showToast(
+          `"${nama}" ditambahkan. ${meta.label} kini ${isBus ? 'BUS SUDAH FULL (50/50)' : 'SUDAH FULL (50/50)'}!`,
+          'warning'
+        );
+      } else {
+        showToast(`"${nama}" ditambahkan ke ${meta.label} (${updated.length}/50).`, 'success');
+      }
+    }
+
+    function deleteSingleTransportParticipant(index) {
+      const unitKey = activeAdminTransportUnit;
+      const meta = getTransportUnitMeta(unitKey);
+      const isBus = unitKey === 'bus';
+      const list = [...meta.list];
+      const removed = list[index];
+      if (!removed) return;
+
+      list.splice(index, 1);
+      const reindexed = list.map((item, idx) => ({
+        nomor: idx + 1,
+        nama: item.nama
+      }));
+
+      const nowStamp = getCurrentIndonesianTimestamp();
+      if (isBus) {
+        appState.busList = reindexed;
+        appState.busLastUpdate = nowStamp;
+      } else {
+        appState.keretaMini[Number(unitKey)] = reindexed;
+        appState.keretaLastUpdate = nowStamp;
+      }
+
+      renderAllPublicViews();
+      renderAdminTransportSection();
+      showToast(`"${removed.nama}" dihapus dari ${meta.label}.`, 'success');
+    }
+
+    function confirmClearActiveTransport() {
+      const unitKey = activeAdminTransportUnit;
+      const meta = getTransportUnitMeta(unitKey);
+      const isBus = unitKey === 'bus';
+
+      openConfirmModal(
+        `Kosongkan ${meta.label}?`,
+        `Seluruh daftar peserta pada ${meta.label} akan dihapus sehingga kuota kembali tersedia 50 peserta.`,
+        () => {
+          const nowStamp = getCurrentIndonesianTimestamp();
+          if (isBus) {
+            appState.busList = [];
+            appState.busLastUpdate = nowStamp;
+          } else {
+            appState.keretaMini[Number(unitKey)] = [];
+            appState.keretaLastUpdate = nowStamp;
+          }
+          renderAllPublicViews();
+          renderAdminTransportSection();
+          showToast(`${meta.label} telah dikosongkan.`, 'success');
+        }
+      );
+    }
+
+    /**
+     * =====================================================================
+     * INISIALISASI SAAT HALAMAN DIMUAT & KEYBOARD SHORTCUT (ESC)
+     * =====================================================================
+     */
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (!document.getElementById('modal-confirm').classList.contains('hidden')) {
+          closeConfirmModal();
+        } else if (!document.getElementById('modal-admin-login').classList.contains('hidden')) {
+          closeLoginModal();
+        } else if (!document.getElementById('modal-admin-panel').classList.contains('hidden')) {
+          closeAdminPanel();
+        }
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      appState = getDefaultDemoData();
+      renderAllPublicViews();
+    });
+  </script>
+</body>
+</html>
