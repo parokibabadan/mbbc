@@ -70,17 +70,23 @@
 <body class="bg-stone-50 text-stone-800 font-sans antialiased selection:bg-emerald-200 selection:text-emerald-900">
 
   <!-- ===================================================================== -->
-  <!-- 1. TOP NAVIGATION BAR                                                 -->
+  <!-- 1. TOP NAVIGATION BAR (BERSIH TANPA TOMBOL ADMIN UNTUK PUBLIK)        -->
   <!-- ===================================================================== -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/80 shadow-xs">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 sm:h-20 gap-2">
-        <!-- Brand / Logo -->
-        <a href="#ringkasan" class="flex items-center gap-3 min-w-0 group">
-          <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-emerald-700 to-emerald-900 text-white flex items-center justify-center shadow-md shadow-emerald-900/15 shrink-0 group-hover:scale-105 transition-transform">
+        <!-- Brand / Logo (Ketuk 5x beruntun pada ikon ini untuk akses cepat Admin di HP) -->
+        <div class="flex items-center gap-3 min-w-0">
+          <button
+            type="button"
+            id="brand-logo-trigger"
+            onclick="handleSecretLogoTap()"
+            aria-label="Logo MBBC"
+            class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-emerald-700 to-emerald-900 text-white flex items-center justify-center shadow-md shadow-emerald-900/15 shrink-0 hover:scale-105 transition-transform cursor-pointer"
+          >
             <i data-lucide="footprints" class="w-5 h-5 sm:w-6 sm:h-6 text-amber-300"></i>
-          </div>
-          <div class="min-w-0">
+          </button>
+          <a href="#ringkasan" class="min-w-0">
             <div class="flex items-center gap-2">
               <span class="font-extrabold text-base sm:text-lg tracking-tight text-emerald-900 truncate">MBBC</span>
               <span id="nav-edition-pill" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
@@ -88,8 +94,8 @@
               </span>
             </div>
             <p class="text-xs text-stone-500 truncate hidden sm:block">Mlaku Bareng Babadan Cangkringan</p>
-          </div>
-        </a>
+          </a>
+        </div>
 
         <!-- Desktop Navigation Links -->
         <nav class="hidden lg:flex items-center gap-1 bg-stone-100 p-1 rounded-2xl border border-stone-200/70">
@@ -108,15 +114,15 @@
           </a>
         </nav>
 
-        <!-- Mode Admin Button -->
-        <div class="flex items-center gap-2 shrink-0">
+        <!-- Tombol Panel Admin: TERSEMBUNYI dari pengunjung publik, hanya muncul setelah Admin berhasil login -->
+        <div id="admin-active-controls" class="hidden items-center gap-2 shrink-0">
           <button
             id="btn-mode-admin"
-            onclick="handleAdminButtonClick()"
+            onclick="openAdminPanel()"
             class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-emerald-800 hover:bg-emerald-900 text-white shadow-sm hover:shadow transition-all cursor-pointer"
           >
-            <i data-lucide="shield-check" class="w-4 h-4 text-amber-300"></i>
-            <span id="btn-mode-admin-label">Mode Admin</span>
+            <i data-lucide="sliders-horizontal" class="w-4 h-4 text-amber-300"></i>
+            <span>Panel Admin</span>
           </button>
         </div>
       </div>
@@ -329,7 +335,7 @@
 
         <div class="pt-3 border-t border-stone-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-stone-500">
           <p>
-            *Klik tombol di atas untuk membuka <strong>Google Form resmi dari panitia</strong> pada tab baru. Data pendaftar yang masuk akan diunggah oleh Admin ke tabel daftar peserta di bawah.
+            *Klik tombol di atas untuk membuka <strong>Google Form resmi dari panitia</strong> pada tab baru. Data pendaftar yang masuk akan diperbarui pada tabel daftar peserta di bawah.
           </p>
           <span class="font-semibold text-emerald-800 shrink-0">Maks. 50 peserta / unit Kereta &amp; Bus</span>
         </div>
@@ -555,18 +561,18 @@
   </footer>
 
   <!-- ===================================================================== -->
-  <!-- MODAL 1: LOGIN PIN ADMIN                                              -->
+  <!-- MODAL 1: LOGIN PIN ADMIN (TERSEMBUNYI, AKSES KHUSUS PANITIA)          -->
   <!-- ===================================================================== -->
   <div id="modal-admin-login" class="hidden fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-xs flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-stone-200">
-      <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center justify-between mb-5">
         <div class="flex items-center gap-3">
           <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
             <i data-lucide="lock-keyhole" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="text-lg font-extrabold text-stone-900">Masuk Mode Admin</h3>
-            <p class="text-xs text-stone-500">Kelola info, masa pendaftaran &amp; daftar peserta</p>
+            <h3 class="text-lg font-extrabold text-stone-900">Akses Khusus Admin</h3>
+            <p class="text-xs text-stone-500">Masukkan PIN Panitia MBBC untuk mengelola data</p>
           </div>
         </div>
         <button onclick="closeLoginModal()" class="p-2 rounded-xl text-stone-400 hover:text-stone-700 hover:bg-stone-100 cursor-pointer">
@@ -574,35 +580,20 @@
         </button>
       </div>
 
-      <!-- Petunjuk PIN Demo -->
-      <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm mb-4 flex items-center justify-between gap-2">
-        <div>
-          <span class="font-semibold">PIN Demo Admin:</span>
-          <code class="px-2 py-0.5 rounded-lg bg-amber-200/70 font-mono font-bold text-amber-950">mbbc2026</code>
-        </div>
-        <button
-          type="button"
-          onclick="fillDemoPin()"
-          class="px-2.5 py-1 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shrink-0 cursor-pointer transition-colors"
-        >
-          Isi Otomatis
-        </button>
-      </div>
-
       <form onsubmit="submitAdminLogin(event)" class="space-y-4">
         <div>
           <label for="admin-pin-input" class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">
-            Masukkan PIN Admin
+            PIN Admin
           </label>
           <input
             type="password"
             id="admin-pin-input"
-            placeholder="Ketik PIN admin..."
+            placeholder="Masukkan PIN panitia..."
             required
             class="w-full px-4 py-3 rounded-2xl border border-stone-300 text-stone-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600"
           />
           <p id="admin-pin-error" class="hidden text-xs font-semibold text-red-600 mt-1.5">
-            PIN salah! Silakan gunakan PIN demo: mbbc2026
+            PIN tidak sesuai! Silakan periksa kembali PIN Admin Panitia.
           </p>
         </div>
 
@@ -626,7 +617,7 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- MODAL 2: PANEL ADMIN LENGKAP (3 TAB PENGELOLAAN)                      -->
+  <!-- MODAL 2: PANEL ADMIN LENGKAP (3 TAB + EXPORT GITHUB)                  -->
   <!-- ===================================================================== -->
   <div id="modal-admin-panel" class="hidden fixed inset-0 z-50 bg-stone-950/65 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
     <div class="bg-white rounded-3xl max-w-5xl w-full max-h-[94vh] flex flex-col shadow-2xl border border-stone-200 overflow-hidden my-auto">
@@ -639,11 +630,20 @@
           </div>
           <div>
             <h3 class="text-lg sm:text-xl font-extrabold leading-tight">Panel Admin MBBC</h3>
-            <p class="text-xs text-emerald-200">Kelola info kegiatan, masa pendaftaran, peserta, kereta mini &amp; bus</p>
+            <p class="text-xs text-emerald-200">Kelola data lalu unduh <code>index.html</code> untuk di-upload ke GitHub</p>
           </div>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onclick="downloadUpdatedHtmlForGithub()"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold bg-amber-400 hover:bg-amber-300 text-stone-950 shadow-sm cursor-pointer transition-colors"
+            title="Unduh file index.html terbaru yang sudah berisi seluruh perubahan Anda untuk di-upload ke GitHub"
+          >
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span>Unduh index.html (Update GitHub)</span>
+          </button>
           <button
             type="button"
             onclick="confirmResetDemoData()"
@@ -651,7 +651,7 @@
             title="Kembalikan ke data simulasi awal"
           >
             <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-            <span>Reset Data Contoh</span>
+            <span>Reset Contoh</span>
           </button>
           <button
             type="button"
@@ -669,6 +669,16 @@
           >
             <i data-lucide="x" class="w-5 h-5"></i>
           </button>
+        </div>
+      </div>
+
+      <!-- Info Singkat Publikasi ke GitHub -->
+      <div class="px-5 sm:px-7 py-2.5 bg-emerald-50 border-b border-emerald-200/80 flex flex-wrap items-center justify-between gap-2 text-xs text-emerald-950 shrink-0">
+        <div class="flex items-center gap-2">
+          <i data-lucide="github" class="w-4 h-4 text-emerald-800 shrink-0"></i>
+          <span>
+            <strong>Alur Update GitHub:</strong> Setelah selesai mengubah data di tab di bawah, klik tombol kuning <strong>"Unduh index.html (Update GitHub)"</strong> lalu unggah file tersebut untuk menimpa <code>index.html</code> di repository GitHub Anda.
+          </span>
         </div>
       </div>
 
@@ -1324,6 +1334,9 @@
   <!-- ===================================================================== -->
   <div id="toast-container" class="fixed bottom-4 right-4 z-[60] flex flex-col gap-2.5 max-w-sm w-[calc(100%-2rem)] pointer-events-none"></div>
 
+  <!-- PENYIMPANAN DATA TERTANAM UNTUK EXPORT KE GITHUB PAGES -->
+  <script id="mbbc-embedded-state" type="application/json">null</script>
+
   <!-- ===================================================================== -->
   <!-- JAVASCRIPT APPLICATION LOGIC                                          -->
   <!-- ===================================================================== -->
@@ -1335,13 +1348,76 @@
     const MAX_UNIT_CAPACITY = 50; // Kapasitas maksimal 50 peserta per Kereta Mini maupun Bus
 
     /**
-     * STATE IN-MEMORY APLIKASI
+     * STATE IN-MEMORY APLIKASI & SNAPSHOT TEMPLATE HTML BERSIH
      */
+    let CLEAN_TEMPLATE_HTML = '';
     let appState = null;
     let isAdminLoggedIn = false;
     let activePublicTransportUnit = '1'; // '1', '2', '3', atau 'bus'
     let activeAdminTransportUnit = '1';  // '1', '2', '3', atau 'bus'
     let pendingConfirmCallback = null;
+
+    // Variabel untuk deteksi ketukan rahasia 5x pada ikon logo (akses admin di HP)
+    let logoTapCount = 0;
+    let logoTapResetTimer = null;
+
+    /**
+     * MEMUAT DATA AWAL (DARI DATA TERTANAM GITHUB JIKA ADA, ATAU DATA CONTOH)
+     */
+    function loadInitialAppState() {
+      try {
+        const embeddedEl = document.getElementById('mbbc-embedded-state');
+        if (embeddedEl && embeddedEl.textContent) {
+          const raw = embeddedEl.textContent.trim();
+          if (raw && raw !== 'null') {
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.eventInfo && parsed.pesertaList) {
+              return parsed;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Gagal membaca data tertanam, menggunakan data default:', err);
+      }
+      return getDefaultDemoData();
+    }
+
+    /**
+     * UNDUH FILE index.html TERBARU UNTUK DI-UPLOAD KE GITHUB PAGES
+     */
+    function downloadUpdatedHtmlForGithub() {
+      if (!CLEAN_TEMPLATE_HTML) {
+        showToast('Template HTML tidak tersedia. Silakan muat ulang halaman.', 'error');
+        return;
+      }
+      try {
+        const safeJson = JSON.stringify(appState, null, 2).replace(/<\//g, '<\\/');
+        const closingTag = '<' + '/script>';
+        const pattern = new RegExp(
+          '(<script id="mbbc-embedded-state" type="application\\/json">)[\\s\\S]*?(' + closingTag + ')',
+          'i'
+        );
+        const updatedHtml = CLEAN_TEMPLATE_HTML.replace(pattern, `$1\n${safeJson}\n$2`);
+
+        const blob = new Blob([updatedHtml], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'index.html';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+
+        showToast(
+          'File index.html terbaru berhasil diunduh! Silakan unggah untuk menimpa index.html di repository GitHub Anda.',
+          'success'
+        );
+      } catch (err) {
+        console.error(err);
+        showToast('Terjadi kesalahan saat membuat file index.html.', 'error');
+      }
+    }
 
     /**
      * HELPER FORMAT DATETIME-LOCAL KE TEKS INDONESIA (WIB)
@@ -1417,16 +1493,11 @@
 
     /**
      * DATA SIMULASI AWAL
-     * - 35 Peserta MBBC#9
-     * - Kereta Mini 1: 50 Peserta (SUDAH FULL)
-     * - Kereta Mini 2: 24 Peserta (Tersedia 26 kuota)
-     * - Kereta Mini 3: 6 Peserta (Tersedia 44 kuota)
-     * - Bus MBBC: 48 Peserta (Tersedia 2 kuota; jika mencapai 50 otomatis BUS SUDAH FULL)
      */
     function getDefaultDemoData() {
       const now = new Date();
-      const defaultStart = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000); // 2 hari lalu
-      const defaultEnd = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);   // 5 hari ke depan
+      const defaultStart = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+      const defaultEnd = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
 
       const pesertaNames = [
         'Ignatius Joko Susilo', 'Maria Magdalena Sri Wahyuni', 'Antonius Bambang Wijanarko',
@@ -1616,7 +1687,7 @@
         toast.style.opacity = '0';
         toast.style.transform = 'translateY(8px)';
         setTimeout(() => toast.remove(), 300);
-      }, 4500);
+      }, 5000);
     }
 
     /**
@@ -1659,7 +1730,6 @@
     function renderHeroAndStats() {
       const { eventInfo, pesertaList, keretaMini, busList } = appState;
 
-      // Update Navbar & Hero Info
       document.getElementById('nav-edition-pill').textContent = eventInfo.edition;
       document.getElementById('hero-edition-badge').innerHTML = `
         <i data-lucide="sparkles" class="w-4 h-4"></i>
@@ -1671,7 +1741,6 @@
       document.getElementById('hero-location').textContent = eventInfo.location;
       document.getElementById('hero-description').textContent = eventInfo.description;
 
-      // Hitung Statistik
       const totalPeserta = pesertaList.length;
       const count1 = (keretaMini[1] || []).length;
       const count2 = (keretaMini[2] || []).length;
@@ -1679,7 +1748,7 @@
       const countBus = (busList || []).length;
 
       const totalKereta = count1 + count2 + count3;
-      const totalMaxKereta = MAX_UNIT_CAPACITY * 3; // 150 Peserta
+      const totalMaxKereta = MAX_UNIT_CAPACITY * 3;
       const sisaKereta = Math.max(0, totalMaxKereta - totalKereta);
       const sisaBus = Math.max(0, MAX_UNIT_CAPACITY - countBus);
 
@@ -1728,7 +1797,6 @@
       const regState = getRegistrationWindowStatus();
       const { status, startLabel, endLabel } = regState;
 
-      // Update indikator titik di Navbar Desktop & Mobile
       const navDot = document.getElementById('nav-reg-dot');
       const mobileDot = document.getElementById('mobile-reg-dot');
       const heroPill = document.getElementById('hero-reg-status-pill');
@@ -1939,7 +2007,6 @@
 
         card.innerHTML = `
           <div>
-            <!-- Header Kartu Armada -->
             <div class="flex items-start justify-between gap-2 mb-4">
               <div class="flex items-center gap-2.5">
                 <div class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${iconBgClass}">
@@ -1966,7 +2033,6 @@
               }
             </div>
 
-            <!-- Banner Merah Mencolok Jika Sudah FULL 50/50 -->
             ${
               meta.isFull
                 ? `<div class="mb-4 px-3 py-2 rounded-2xl bg-red-600 text-white text-xs font-extrabold text-center tracking-wide shadow-xs">
@@ -1975,7 +2041,6 @@
                 : ''
             }
 
-            <!-- Angka Okupansi & Progress Bar -->
             <div class="mb-4">
               <div class="flex items-baseline justify-between mb-1.5">
                 <span class="text-xl sm:text-2xl font-extrabold ${meta.isFull ? 'text-red-700' : 'text-stone-900'}">
@@ -1996,7 +2061,6 @@
             </div>
           </div>
 
-          <!-- Tombol Aksi Lihat Daftar Peserta -->
           <button
             type="button"
             onclick="selectAndScrollToTransport('${unitKey}')"
@@ -2159,7 +2223,6 @@
 
       document.getElementById('transport-last-update').textContent = meta.lastUpdate;
 
-      // Update Pill Status Aktif di Header
       const activePill = document.getElementById('transport-active-pill');
       if (meta.isFull) {
         activePill.textContent = meta.fullTitle;
@@ -2171,7 +2234,6 @@
         }`;
       }
 
-      // Tampilkan / Sembunyikan Banner Peringatan FULL (Kereta Mini maupun Bus)
       const fullBanner = document.getElementById('transport-full-banner');
       if (meta.isFull) {
         document.getElementById('transport-full-banner-title').textContent = meta.fullTitle;
@@ -2183,7 +2245,6 @@
         fullBanner.classList.add('hidden');
       }
 
-      // Filter Pencarian
       const searchInput = document.getElementById('search-transport');
       const clearBtn = document.getElementById('clear-search-transport');
       const query = (searchInput.value || '').trim().toLowerCase();
@@ -2255,14 +2316,35 @@
 
     /**
      * =====================================================================
-     * AUTENTIKASI & KONTROL MODAL ADMIN
+     * AKSES RAHASIA & AUTENTIKASI ADMIN (TERSEMBUNYI DARI PUBLIK)
      * =====================================================================
      */
-    function handleAdminButtonClick() {
+    function triggerSecretAdminAccess() {
       if (isAdminLoggedIn) {
         openAdminPanel();
       } else {
         openLoginModal();
+      }
+    }
+
+    function handleSecretLogoTap() {
+      logoTapCount += 1;
+      clearTimeout(logoTapResetTimer);
+      if (logoTapCount >= 5) {
+        logoTapCount = 0;
+        triggerSecretAdminAccess();
+        return;
+      }
+      logoTapResetTimer = setTimeout(() => {
+        logoTapCount = 0;
+      }, 2500);
+    }
+
+    function checkSecretAdminUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const hash = (window.location.hash || '').toLowerCase();
+      if (params.has('admin') || params.get('mode') === 'admin' || hash === '#admin') {
+        triggerSecretAdminAccess();
       }
     }
 
@@ -2282,13 +2364,6 @@
       document.getElementById('admin-pin-error').classList.add('hidden');
     }
 
-    function fillDemoPin() {
-      const input = document.getElementById('admin-pin-input');
-      input.value = ADMIN_PIN;
-      document.getElementById('admin-pin-error').classList.add('hidden');
-      input.focus();
-    }
-
     function submitAdminLogin(event) {
       event.preventDefault();
       const inputVal = (document.getElementById('admin-pin-input').value || '').trim();
@@ -2296,7 +2371,9 @@
 
       if (inputVal === ADMIN_PIN) {
         isAdminLoggedIn = true;
-        document.getElementById('btn-mode-admin-label').textContent = 'Panel Admin';
+        const adminControls = document.getElementById('admin-active-controls');
+        adminControls.classList.remove('hidden');
+        adminControls.classList.add('flex');
         closeLoginModal();
         openAdminPanel();
         showToast('Berhasil masuk ke Panel Admin MBBC.', 'success');
@@ -2319,7 +2396,9 @@
 
     function logoutAdmin() {
       isAdminLoggedIn = false;
-      document.getElementById('btn-mode-admin-label').textContent = 'Mode Admin';
+      const adminControls = document.getElementById('admin-active-controls');
+      adminControls.classList.add('hidden');
+      adminControls.classList.remove('flex');
       closeAdminPanel();
       showToast('Anda telah keluar dari Mode Admin.', 'success');
     }
@@ -2411,14 +2490,14 @@
       let startObj, endObj;
 
       if (preset === 'open7days') {
-        startObj = new Date(now.getTime() - 60 * 1000); // 1 menit lalu
-        endObj = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 hari lagi
+        startObj = new Date(now.getTime() - 60 * 1000);
+        endObj = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
       } else if (preset === 'upcoming') {
-        startObj = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Besok
+        startObj = new Date(now.getTime() + 24 * 60 * 60 * 1000);
         endObj = new Date(now.getTime() + 8 * 24 * 60 * 60 * 1000);
       } else if (preset === 'closeNow') {
         startObj = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
-        endObj = new Date(now.getTime() - 60 * 1000); // 1 menit lalu
+        endObj = new Date(now.getTime() - 60 * 1000);
       }
 
       document.getElementById('input-reg-start').value = toDateTimeLocalString(startObj);
@@ -2455,7 +2534,7 @@
 
       renderAllPublicViews();
       updateAdminRegLiveBadge();
-      showToast('Pengaturan kegiatan & masa berlaku pendaftaran berhasil disimpan!', 'success');
+      showToast('Pengaturan kegiatan & pendaftaran berhasil disimpan! Klik "Unduh index.html" untuk update ke GitHub.', 'success');
     }
 
     /**
@@ -2472,7 +2551,6 @@
 
       if (cleanedRows.length === 0) return [];
 
-      // Deteksi baris header pada baris pertama
       const firstRowJoined = cleanedRows[0].join(' ').toLowerCase();
       const hasHeader =
         (/\b(no|nomor|urut)\b/.test(firstRowJoined) && /\b(nama|peserta)\b/.test(firstRowJoined)) ||
@@ -2494,7 +2572,6 @@
             result.push({ nomor: null, nama: nonEmpty[0] });
           }
         } else {
-          // Satu kolom: cek apakah formatnya "1. Nama Peserta"
           const single = nonEmpty[0];
           const match = single.match(/^(\d+)\s*[.,\-:|)]\s*(.+)$/);
           if (match) {
@@ -2516,7 +2593,6 @@
 
       if (lines.length === 0) return [];
 
-      // Lewati baris header jika ada
       const firstLower = lines[0].toLowerCase();
       const startIndex =
         (/\b(no|nomor|urut)\b/.test(firstLower) && /\b(nama|peserta)\b/.test(firstLower)) ||
@@ -2527,7 +2603,6 @@
       const parsed = [];
       for (let i = startIndex; i < lines.length; i++) {
         const line = lines[i];
-        // Format: "1, Nama" | "1. Nama" | "1\tNama" | "1 - Nama"
         const sepMatch = line.match(/^(\d+)\s*[,.\-\t|:;)]\s*(.+)$/);
         if (sepMatch) {
           const nama = sepMatch[2].trim();
@@ -2535,14 +2610,12 @@
           continue;
         }
 
-        // Format: "1 Nama Peserta"
         const spaceMatch = line.match(/^(\d+)\s+([A-Za-zÀ-ÿ].+)$/);
         if (spaceMatch) {
           parsed.push({ nomor: parseInt(spaceMatch[1], 10), nama: spaceMatch[2].trim() });
           continue;
         }
 
-        // Hanya nama peserta
         parsed.push({ nomor: null, nama: line });
       }
 
@@ -2797,7 +2870,6 @@
       const meta = getTransportUnitMeta(unitKey);
       const isBus = unitKey === 'bus';
 
-      // Render 4 tombol pilihan armada di Admin
       const selectorContainer = document.getElementById('admin-transport-selector');
       selectorContainer.innerHTML = ['1', '2', '3', 'bus']
         .map((uKey) => {
@@ -2845,7 +2917,6 @@
         })
         .join('');
 
-      // Alert FULL di Admin
       const fullAlert = document.getElementById('admin-transport-full-alert');
       if (meta.isFull) {
         document.getElementById('admin-transport-full-alert-text').textContent = isBus
@@ -2856,7 +2927,6 @@
         fullAlert.classList.add('hidden');
       }
 
-      // Update label & input berdasarkan armada aktif
       document.getElementById('label-transport-update').textContent = isBus
         ? 'Tanggal & Waktu Update Daftar Bus MBBC'
         : 'Tanggal & Waktu Update Daftar Kereta Mini';
@@ -2869,7 +2939,6 @@
         `Peserta ${meta.label} (${meta.count} / 50 Peserta)${meta.isFull ? (isBus ? ' — BUS SUDAH FULL' : ' — SUDAH FULL') : ''}`;
       document.getElementById('btn-clear-transport-label').textContent = `Kosongkan ${meta.label}`;
 
-      // Nonaktifkan tombol tambah satuan jika sudah 50/50 FULL
       const singleInput = document.getElementById('single-transport-name');
       const addSingleBtn = document.getElementById('btn-add-single-transport');
       if (meta.isFull) {
@@ -2884,7 +2953,6 @@
         addSingleBtn.className = 'inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-700 hover:bg-emerald-800 text-white cursor-pointer shrink-0';
       }
 
-      // Render daftar peserta armada aktif
       const listBody = document.getElementById('admin-transport-list-body');
       if (meta.list.length === 0) {
         listBody.innerHTML = `
@@ -3158,10 +3226,16 @@
 
     /**
      * =====================================================================
-     * INISIALISASI SAAT HALAMAN DIMUAT & KEYBOARD SHORTCUT (ESC)
+     * INISIALISASI SAAT HALAMAN DIMUAT & KEYBOARD SHORTCUT (ESC & ADMIN)
      * =====================================================================
      */
     document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'a') {
+        e.preventDefault();
+        triggerSecretAdminAccess();
+        return;
+      }
+
       if (e.key === 'Escape') {
         if (!document.getElementById('modal-confirm').classList.contains('hidden')) {
           closeConfirmModal();
@@ -3173,9 +3247,14 @@
       }
     });
 
+    window.addEventListener('hashchange', checkSecretAdminUrl);
+
     window.addEventListener('DOMContentLoaded', () => {
-      appState = getDefaultDemoData();
+      // Simpan snapshot HTML asli sebelum Lucide/render mengubah DOM untuk fitur Unduh GitHub
+      CLEAN_TEMPLATE_HTML = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      appState = loadInitialAppState();
       renderAllPublicViews();
+      checkSecretAdminUrl();
     });
   </script>
 </body>
